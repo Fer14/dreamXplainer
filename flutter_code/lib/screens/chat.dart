@@ -102,8 +102,8 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                       items: [
                         MultiSelectCard(
-                          value: 'Divertido',
-                          label: 'Divertido',
+                          value: 'Funny',
+                          label: 'Funny',
                           decorations: MultiSelectItemDecorations(
                             decoration: BoxDecoration(
                                 color:
@@ -127,8 +127,8 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                         ),
                         MultiSelectCard(
-                          value: 'Detallado',
-                          label: 'Detallado',
+                          value: 'Detailed',
+                          label: 'Detailed',
                           decorations: MultiSelectItemDecorations(
                             decoration: BoxDecoration(
                                 color: Colors.blue.withOpacity(0.5),
@@ -151,8 +151,8 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                         ),
                         MultiSelectCard(
-                          value: 'Amoroso',
-                          label: 'Amoroso',
+                          value: 'Love',
+                          label: 'Love',
                           decorations: MultiSelectItemDecorations(
                             decoration: BoxDecoration(
                                 color: Colors.amber.withOpacity(0.5),
@@ -163,8 +163,8 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                         ),
                         MultiSelectCard(
-                          value: 'Triste',
-                          label: 'Triste',
+                          value: 'Sad',
+                          label: 'Sad',
                           decorations: MultiSelectItemDecorations(
                             decoration: BoxDecoration(
                                 color: Colors.orange.withOpacity(0.5),
