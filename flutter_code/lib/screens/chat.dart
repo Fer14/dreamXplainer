@@ -178,8 +178,8 @@ class _ChatPageState extends State<ChatPage> {
                       onMaximumSelected: (allSelectedItems, selectedItem) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: magic_colors.dark_pink,
-                            content:
-                                Text('Solo puedes seleccionar 2 opciones')));
+                            content: Text(
+                                'You can only select 2 options at a time')));
                       },
                       onChange: (allSelectedItems, selectedItem) {}),
                 ),
@@ -226,7 +226,7 @@ class _ChatPageState extends State<ChatPage> {
                 cursorColor: magic_colors.dark_pink,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.only(left: 10),
-                  hintText: "Escribe tu sueño...",
+                  hintText: "Type your dream",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none,
                 ),
