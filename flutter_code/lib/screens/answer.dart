@@ -68,7 +68,7 @@ class _AnswerPageState extends State<AnswerPage> {
                         ),
                         (answerProvider.answer != null)
                             ? Container(
-                                width: size.width * 0.8,
+                                width: size.width * 0.9,
                                 height: size.height * 0.3,
                                 decoration: BoxDecoration(
                                   color: Colors.white,

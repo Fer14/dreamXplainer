@@ -38,6 +38,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     final answerProvider = Provider.of<AnswerProvider>(context);
 
     return Scaffold(
@@ -62,6 +64,27 @@ class _ChatPageState extends State<ChatPage> {
                     "assets/dream.png",
                     width: 200,
                     height: 200,
+                  ),
+                ),
+                Container(
+                  width: size.width * 0.9,
+                  height: size.height * 0.1,
+                  margin: EdgeInsets.only(top: 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(18),
+                      bottomLeft: Radius.circular(18),
+                      bottomRight: Radius.circular(18),
+                    ),
+                  ),
+                  child: Text(
+                    "¿What kind of explanation do you want?",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
@@ -159,6 +182,27 @@ class _ChatPageState extends State<ChatPage> {
                                 Text('Solo puedes seleccionar 2 opciones')));
                       },
                       onChange: (allSelectedItems, selectedItem) {}),
+                ),
+                Container(
+                  width: size.width * 0.9,
+                  height: size.height * 0.1,
+                  margin: EdgeInsets.only(top: 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(18),
+                      bottomLeft: Radius.circular(18),
+                      bottomRight: Radius.circular(18),
+                    ),
+                  ),
+                  child: Text(
+                    "¿What is your dream?",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 buildMessageInput(answerProvider),
               ],
