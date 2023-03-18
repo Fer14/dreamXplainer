@@ -40,6 +40,7 @@ dependencies:
   concentric_transition: ^1.0.3
   provider: ^6.0.4
   loading_animation_widget: ^1.2.0
+  flutter_multi_select_items: ^0.4.2
 
 
 dev_dependencies:

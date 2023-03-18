@@ -4,7 +4,7 @@ import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-
+import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import '../provider/answer_provider.dart';
 
 class ChatPage extends StatefulWidget {
@@ -63,6 +63,102 @@ class _ChatPageState extends State<ChatPage> {
                     width: 200,
                     height: 200,
                   ),
+                ),
+                Container(
+                  child: MultiSelectContainer(
+                      maxSelectableCount: 2,
+                      prefix: MultiSelectPrefix(
+                        selectedPrefix: const Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                      items: [
+                        MultiSelectCard(
+                          value: 'Divertido',
+                          label: 'Divertido',
+                          decorations: MultiSelectItemDecorations(
+                            decoration: BoxDecoration(
+                                color:
+                                    magic_colors.dark_purple.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20)),
+                            selectedDecoration: BoxDecoration(
+                                color: magic_colors.dark_purple,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                        MultiSelectCard(
+                          value: '+18',
+                          label: '+18',
+                          decorations: MultiSelectItemDecorations(
+                            decoration: BoxDecoration(
+                                color: magic_colors.dark_blue.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20)),
+                            selectedDecoration: BoxDecoration(
+                                color: magic_colors.dark_blue,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                        MultiSelectCard(
+                          value: 'Detallado',
+                          label: 'Detallado',
+                          decorations: MultiSelectItemDecorations(
+                            decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20)),
+                            selectedDecoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                        MultiSelectCard(
+                          value: 'Random',
+                          label: 'Random',
+                          decorations: MultiSelectItemDecorations(
+                            decoration: BoxDecoration(
+                                color: magic_colors.green.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20)),
+                            selectedDecoration: BoxDecoration(
+                                color: magic_colors.green,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                        MultiSelectCard(
+                          value: 'Amoroso',
+                          label: 'Amoroso',
+                          decorations: MultiSelectItemDecorations(
+                            decoration: BoxDecoration(
+                                color: Colors.amber.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20)),
+                            selectedDecoration: BoxDecoration(
+                                color: Colors.amber,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                        MultiSelectCard(
+                          value: 'Triste',
+                          label: 'Triste',
+                          decorations: MultiSelectItemDecorations(
+                            decoration: BoxDecoration(
+                                color: Colors.orange.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20)),
+                            selectedDecoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                      ],
+                      onMaximumSelected: (allSelectedItems, selectedItem) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: magic_colors.dark_pink,
+                            content:
+                                Text('Solo puedes seleccionar 2 opciones')));
+                      },
+                      onChange: (allSelectedItems, selectedItem) {}),
                 ),
                 buildMessageInput(answerProvider),
               ],

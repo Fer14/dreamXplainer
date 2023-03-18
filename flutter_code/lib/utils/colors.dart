@@ -11,4 +11,5 @@ class magic_colors {
   static const light_blue = Color(0xff91f1f5);
   static const dark_blue = Color(0xff4ed1e7);
   static const blue = Color(0xff3ddbde);
+  static const green = Color(0xff52b788);
 }
