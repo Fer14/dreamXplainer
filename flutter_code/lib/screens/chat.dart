@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/chat.dart';
+import 'package:hello_world/screens/answer.dart';
+import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/utils/colors.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
+
+import '../provider/answer_provider.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -22,7 +25,6 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController textEditingController = TextEditingController();
-  String answer = "";
 
   void _incrementCounter() {
     setState(() {
@@ -36,12 +38,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final answerProvider = Provider.of<AnswerProvider>(context);
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: magic_colors.dark_pink,
@@ -66,7 +64,7 @@ class _ChatPageState extends State<ChatPage> {
                     height: 200,
                   ),
                 ),
-                buildMessageInput(),
+                buildMessageInput(answerProvider),
               ],
             ),
           ),
@@ -75,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
         );
   }
 
-  Widget buildMessageInput() {
+  Widget buildMessageInput(AnswerProvider answerProvider) {
     return SizedBox(
         width: double.infinity,
         height: 50,
@@ -100,13 +98,27 @@ class _ChatPageState extends State<ChatPage> {
                   //onSendMessage(textEditingController.text, MessageType.text);
                 },
               )),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: Colors.white,
+              //   ),
+              //   child: IconButton(
+              //     onPressed: () {
+              //       //onSendMessage(textEditingController.text, MessageType.text);
+              //     },
+              //     icon: const Icon(Icons.keyboard_voice_rounded),
+              //     color: magic_colors.dark_pink,
+              //   ),
+              // ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
                 child: IconButton(
                   onPressed: () {
-                    //onSendMessage(textEditingController.text, MessageType.text);
+                    answerProvider.callGPT(textEditingController.text);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AnswerPage()));
                   },
                   icon: const Icon(Icons.send_rounded),
                   color: magic_colors.dark_pink,
@@ -115,32 +127,5 @@ class _ChatPageState extends State<ChatPage> {
             ],
           ),
         ));
-  }
-
-  Future<void> callGPT() async {
-    var url = Uri.parse('https://api.openai.com/v1/chat/completions');
-    var apiKey = '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';
-
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey'
-    };
-
-    var data = {
-      'model': 'gpt-3.5-turbo',
-      'messages': [
-        {'role': 'user', 'content': 'Hello!'}
-      ]
-    };
-
-    var response =
-        await http.post(url, headers: headers, body: json.encode(data));
-
-    print(response.statusCode);
-    print(response.body);
-
-    setState(() {
-      answer = response.body;
-    });
   }
 }
