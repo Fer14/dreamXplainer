@@ -15,7 +15,7 @@ class AnswerProvider extends ChangeNotifier {
 
   Future<void> callGPT(String text) async {
     // set time sleep
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 1));
     _answer = "Answer from GPT-3........................";
     notifyListeners();
 

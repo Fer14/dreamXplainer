@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/utils/colors.dart';
@@ -6,6 +7,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../utils/appbar.dart';
 
 class AnswerPage extends StatefulWidget {
   const AnswerPage({super.key});
@@ -42,16 +47,14 @@ class _AnswerPageState extends State<AnswerPage> {
     final answerProvider = Provider.of<AnswerProvider>(context);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: magic_colors.dark_pink,
-          title: Text(
-            "Dream Explainer",
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true,
-        ),
+        appBar: MainAppBar(),
         body: Container(
-          color: magic_colors.light_pink,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/clouds.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,7 +74,7 @@ class _AnswerPageState extends State<AnswerPage> {
                                 width: size.width * 0.9,
                                 height: size.height * 0.3,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: magic_colors.dark_pink,
                                   borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(18),
                                     bottomLeft: Radius.circular(18),
@@ -83,15 +86,59 @@ class _AnswerPageState extends State<AnswerPage> {
                                   child: Text(
                                     answerProvider.answer!,
                                     style: TextStyle(
+                                        color: Colors.white,
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               )
                             : LoadingAnimationWidget.stretchedDots(
-                                color: Colors.white,
+                                color: magic_colors.dark_pink,
                                 size: 200,
                               ),
+                        (answerProvider.answer != null)
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(size.height * 0.1,
+                                              size.height * 0.1),
+                                          backgroundColor:
+                                              magic_colors.dark_pink,
+                                          shape: CircleBorder()),
+                                      onPressed: () async {
+                                        await Clipboard.setData(ClipboardData(
+                                            text: answerProvider.answer!));
+                                      },
+                                      child: Icon(
+                                        Icons.content_copy,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(size.height * 0.1,
+                                              size.height * 0.1),
+                                          backgroundColor:
+                                              magic_colors.dark_pink,
+                                          shape: CircleBorder()),
+                                      onPressed: () async {
+                                        Share.share(
+                                            answerProvider.answer.toString());
+                                      },
+                                      child: Icon(
+                                        FontAwesomeIcons.share,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container()
                       ],
                     )),
               ],
