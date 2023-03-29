@@ -12,4 +12,16 @@ class magic_colors {
   static const dark_blue = Color(0xff4ed1e7);
   static const blue = Color(0xff3ddbde);
   static const green = Color(0xff52b788);
+  static const white = Color(0xffeff7f6);
+}
+
+class colors {
+  static const pink = Color(0xffffb5a7);
+  static const light_pink = Color(0xfffcd5ce);
+  static const white = Color(0xfff8edeb);
+  static const light_orange = Color(0xfff9dcc4);
+  static const orange = Color(0xfffec89a);
+  static const brown = Color(0xff463f3a);
+  static const gray = Color(0xffbcb8b1);
+  static const light_brown = Color(0xff8a817c);
 }

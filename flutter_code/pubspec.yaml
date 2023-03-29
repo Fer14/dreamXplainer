@@ -43,6 +43,9 @@ dependencies:
   flutter_multi_select_items: ^0.4.2
   share_plus: ^6.3.1
   font_awesome_flutter: ^9.1.0
+  slide_to_confirm: ^1.1.0
+  flutter_animate: ^4.1.0
+  #getwidget: ^3.0.1
 
 dev_dependencies:
   flutter_test:

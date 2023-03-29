@@ -47,59 +47,58 @@ class _AnswerPageState extends State<AnswerPage> {
     final answerProvider = Provider.of<AnswerProvider>(context);
 
     return Scaffold(
-        appBar: MainAppBar(),
+        //appBar: MainAppBar(),
         body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/clouds.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                    margin: EdgeInsets.only(top: 20),
-                    alignment: Alignment.center,
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          "assets/bruja.png",
-                          width: 200,
-                          height: 200,
-                        ),
-                        (answerProvider.answer != null)
-                            ? Container(
-                                width: size.width * 0.9,
-                                height: size.height * 0.3,
-                                decoration: BoxDecoration(
-                                  color: magic_colors.dark_pink,
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(18),
-                                    bottomLeft: Radius.circular(18),
-                                    bottomRight: Radius.circular(18),
+      decoration: BoxDecoration(
+        color: colors.white,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+                height: size.height * 0.9,
+                margin: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: colors.brown,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                    bottomRight: Radius.circular(50),
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.hatWizard,
+                      color: colors.white,
+                      size: 100,
+                    ),
+                    Divider(
+                      color: colors.white,
+                      thickness: 2,
+                    ),
+                    (answerProvider.answer != null)
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                                SingleChildScrollView(
+                                  child: Container(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    height: size.height * 0.6,
+                                    child: Text(
+                                      answerProvider.answer!,
+                                      style: TextStyle(
+                                          color: colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    answerProvider.answer!,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              )
-                            : LoadingAnimationWidget.stretchedDots(
-                                color: magic_colors.dark_pink,
-                                size: 200,
-                              ),
-                        (answerProvider.answer != null)
-                            ? Padding(
-                                padding: EdgeInsets.only(top: 20),
-                                child: Row(
+                                Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
@@ -107,8 +106,7 @@ class _AnswerPageState extends State<AnswerPage> {
                                       style: ElevatedButton.styleFrom(
                                           fixedSize: Size(size.height * 0.1,
                                               size.height * 0.1),
-                                          backgroundColor:
-                                              magic_colors.dark_pink,
+                                          backgroundColor: colors.white,
                                           shape: CircleBorder()),
                                       onPressed: () async {
                                         await Clipboard.setData(ClipboardData(
@@ -116,15 +114,15 @@ class _AnswerPageState extends State<AnswerPage> {
                                       },
                                       child: Icon(
                                         Icons.content_copy,
-                                        color: Colors.white,
+                                        color: colors.brown,
+                                        size: 35,
                                       ),
                                     ),
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           fixedSize: Size(size.height * 0.1,
                                               size.height * 0.1),
-                                          backgroundColor:
-                                              magic_colors.dark_pink,
+                                          backgroundColor: colors.white,
                                           shape: CircleBorder()),
                                       onPressed: () async {
                                         Share.share(
@@ -132,19 +130,26 @@ class _AnswerPageState extends State<AnswerPage> {
                                       },
                                       child: Icon(
                                         FontAwesomeIcons.share,
-                                        color: Colors.white,
+                                        color: colors.brown,
+                                        size: 35,
                                       ),
                                     )
                                   ],
                                 ),
-                              )
-                            : Container()
-                      ],
-                    )),
-              ],
-            ),
-          ),
-        )
+                              ])
+                        : Padding(
+                            padding: const EdgeInsets.only(top: 50.0),
+                            child: LoadingAnimationWidget.stretchedDots(
+                              color: colors.white,
+                              size: 200,
+                            ),
+                          )
+                  ],
+                )),
+          ],
+        ),
+      ),
+    )
         // This trailing comma makes auto-formatting nicer for build methods.
         );
   }

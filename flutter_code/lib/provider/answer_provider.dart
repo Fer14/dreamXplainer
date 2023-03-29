@@ -8,8 +8,17 @@ class AnswerProvider extends ChangeNotifier {
 
   String? get answer => _answer;
 
+  String? _name;
+
+  String? get name => _name;
+
   void setAnswer(String answer) {
     _answer = answer;
+    notifyListeners();
+  }
+
+  void setName(String name) {
+    _name = name;
     notifyListeners();
   }
 
