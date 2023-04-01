@@ -13,6 +13,16 @@ class magic_colors {
   static const blue = Color(0xff3ddbde);
   static const green = Color(0xff52b788);
   static const white = Color(0xffeff7f6);
+  static const pale_blue = Color(0xffafeeee);
+}
+
+class pale_colors {
+  static const violet = Color(0xffcdb4db);
+  static const pink = Color(0xffffc8dd);
+  static const dark_pink = Color(0xffffafcc);
+  static const light_blue = Color(0xffbde0fe);
+  static const blue = Color(0xffa2d2ff);
+  static const yellow = Color(0xffffff95);
 }
 
 class colors {

@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat.dart';
+import 'package:hello_world/screens/chat2.dart';
+import 'package:hello_world/screens/mode.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -39,14 +41,14 @@ class _PolicyPageState extends State<PolicyPage> {
 
     return Scaffold(
         body: Container(
-      color: colors.white,
+      color: pale_colors.pink,
       child: Column(
         children: <Widget>[
           Container(
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: colors.brown,
+                color: Colors.white,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(100),
                   bottomRight: Radius.circular(100),
@@ -55,36 +57,43 @@ class _PolicyPageState extends State<PolicyPage> {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20, 50, 20, 20),
+                padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
                 child: Container(
                   width: double.infinity,
-                  height: size.height * 0.7,
+                  height: size.height * 0.75,
                   decoration: BoxDecoration(),
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hello ${answerProvider.name}!',
+                      Container(
+                          height: size.height * 0.3,
+                          child: Center(
+                            child: Image.asset("assets/sleep.png"),
+                          )),
+                      Text('Hello from the dreamXplainer team!',
                           style: TextStyle(
-                            color: colors.white,
-                            fontSize: 24,
+                            color: colors.brown,
+                            fontSize: 20,
                           )),
                       Text(policy_text,
                           style: TextStyle(
-                            color: colors.white,
-                            fontSize: 24,
+                            color: colors.brown,
+                            fontSize: 20,
                           )),
                     ],
                   ),
                 ),
               ),
             ),
-          ).animate().moveY(duration: 500.ms),
+          ).animate().moveY(
+                duration: 500.ms,
+              ),
           Container(
             padding: const EdgeInsets.only(top: 30),
             child: ConfirmationSlider(
-              foregroundColor: colors.brown,
+              foregroundColor: pale_colors.blue,
               textStyle: TextStyle(
                 color: colors.brown,
                 fontSize: 20,
@@ -92,7 +101,7 @@ class _PolicyPageState extends State<PolicyPage> {
               onConfirmation: () => {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ChatPage()),
+                  MaterialPageRoute(builder: (context) => ModePage()),
                 )
               },
             ),

@@ -4,6 +4,7 @@ import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/onboarding.dart';
 import 'package:hello_world/onboarding2.dart';
 import 'package:hello_world/screens/name.dart';
+import 'package:hello_world/screens/policy.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.red,
             ),
             home:
-                const NamePage() //const MyHomePage(title: 'Flutter Demo Home Page'),
+                const PolicyPage() //const MyHomePage(title: 'Flutter Demo Home Page'),
             ));
   }
 }

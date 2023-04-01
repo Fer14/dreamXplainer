@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat.dart';
@@ -49,105 +50,113 @@ class _AnswerPageState extends State<AnswerPage> {
     return Scaffold(
         //appBar: MainAppBar(),
         body: Container(
-      decoration: BoxDecoration(
-        color: colors.white,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-                height: size.height * 0.9,
-                margin: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: colors.brown,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(50),
-                    bottomRight: Radius.circular(50),
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
+      color: pale_colors.pink,
+      child: Column(
+        children: <Widget>[
+          Container(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(100),
+                  bottomRight: Radius.circular(100),
+                  topLeft: Radius.circular(0),
+                  topRight: Radius.circular(0),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
+                child: Container(
+                  width: double.infinity,
+                  height: size.height * 0.75,
+                  decoration: BoxDecoration(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: size.height * 0.2,
+                        child: Image.asset(
+                          'assets/night.png',
+                        ),
+                      ),
+                      (answerProvider.answer != null)
+                          ? Container(
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SingleChildScrollView(
+                                      child: Container(
+                                        padding: const EdgeInsets.only(top: 20),
+                                        height: size.height * 0.4,
+                                        child: Text(
+                                          answerProvider.answer!,
+                                          style: TextStyle(
+                                            color: colors.brown,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 50.0),
+                              child: LoadingAnimationWidget.stretchedDots(
+                                color: pale_colors.blue,
+                                size: 200,
+                              ),
+                            ),
+                    ],
                   ),
                 ),
-                alignment: Alignment.center,
-                child: Column(
-                  children: [
-                    Icon(
-                      FontAwesomeIcons.hatWizard,
-                      color: colors.white,
-                      size: 100,
-                    ),
-                    Divider(
-                      color: colors.white,
-                      thickness: 2,
-                    ),
-                    (answerProvider.answer != null)
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                                SingleChildScrollView(
-                                  child: Container(
-                                    padding: const EdgeInsets.only(top: 20),
-                                    height: size.height * 0.6,
-                                    child: Text(
-                                      answerProvider.answer!,
-                                      style: TextStyle(
-                                          color: colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          fixedSize: Size(size.height * 0.1,
-                                              size.height * 0.1),
-                                          backgroundColor: colors.white,
-                                          shape: CircleBorder()),
-                                      onPressed: () async {
-                                        await Clipboard.setData(ClipboardData(
-                                            text: answerProvider.answer!));
-                                      },
-                                      child: Icon(
-                                        Icons.content_copy,
-                                        color: colors.brown,
-                                        size: 35,
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          fixedSize: Size(size.height * 0.1,
-                                              size.height * 0.1),
-                                          backgroundColor: colors.white,
-                                          shape: CircleBorder()),
-                                      onPressed: () async {
-                                        Share.share(
-                                            answerProvider.answer.toString());
-                                      },
-                                      child: Icon(
-                                        FontAwesomeIcons.share,
-                                        color: colors.brown,
-                                        size: 35,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ])
-                        : Padding(
-                            padding: const EdgeInsets.only(top: 50.0),
-                            child: LoadingAnimationWidget.stretchedDots(
-                              color: colors.white,
-                              size: 200,
-                            ),
-                          )
-                  ],
-                )),
-          ],
-        ),
+              ),
+            ),
+          ).animate().moveY(
+                duration: 500.ms,
+              ),
+          Container(
+            height: size.height * 0.2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      fixedSize: Size(size.height * 0.1, size.height * 0.1),
+                      backgroundColor: pale_colors.blue,
+                      shape: CircleBorder()),
+                  onPressed: () async {
+                    await Clipboard.setData(
+                        ClipboardData(text: answerProvider.answer!));
+                  },
+                  child: Icon(
+                    Icons.content_copy,
+                    color: Colors.white,
+                    size: 35,
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      fixedSize: Size(size.height * 0.1, size.height * 0.1),
+                      backgroundColor: pale_colors.blue,
+                      shape: CircleBorder()),
+                  onPressed: () async {
+                    Share.share(answerProvider.answer.toString());
+                  },
+                  child: Icon(
+                    FontAwesomeIcons.share,
+                    color: Colors.white,
+                    size: 35,
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
       ),
     )
         // This trailing comma makes auto-formatting nicer for build methods.
