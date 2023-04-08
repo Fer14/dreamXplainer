@@ -58,10 +58,10 @@ class _AnswerPageState extends State<AnswerPage>
     final answerProvider = Provider.of<AnswerProvider>(context);
 
     return Scaffold(
-        //appBar: MainAppBar(),
+        appBar:  MainAppBar(),
         body: SingleChildScrollView(
             child: Container(
-      height: size.height * 1.05,
+      height: size.height * 1,
       color: pale_colors.pink,
       child: Column(
         children: <Widget>[
@@ -70,16 +70,13 @@ class _AnswerPageState extends State<AnswerPage>
             padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
             decoration: BoxDecoration(
               color: _selectedColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0)),
             ),
             child: TabBar(
               controller: _tabController,
               indicator: const BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8.0),
-                      topRight: Radius.circular(8.0)),
+                      topLeft: Radius.circular(100),
+                      topRight: Radius.circular(100)),
                   color: Colors.white),
               labelColor: colors.brown,
               unselectedLabelColor: Colors.white,
@@ -102,7 +99,7 @@ class _AnswerPageState extends State<AnswerPage>
                 padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
                 child: Container(
                   width: double.infinity,
-                  height: size.height * 0.7,
+                  height: size.height * 0.55,
                   decoration: BoxDecoration(),
                   child: TabBarView(controller: _tabController, children: [
                     Column(
@@ -114,19 +111,18 @@ class _AnswerPageState extends State<AnswerPage>
                           'Explanation',
                           style: TextStyle(
                             color: pale_colors.blue,
-                            fontSize: 30,
+                            fontSize: 25,
                           ),
                         ),
                         Container(
-                          height: size.height * 0.2,
+                          height: size.height * 0.15,
                           child: Image.asset(
                             'assets/explanation.png',
                           ),
                         ),
                         (answerProvider.explanationAnswer != null)
                             ? Container(
-                                padding: const EdgeInsets.only(top: 10),
-                                height: size.height * 0.3,
+                                height: size.height * 0.2,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -161,11 +157,11 @@ class _AnswerPageState extends State<AnswerPage>
                           'End of dream',
                           style: TextStyle(
                             color: pale_colors.blue,
-                            fontSize: 30,
+                            fontSize: 25,
                           ),
                         ),
                         Container(
-                          height: size.height * 0.2,
+                          height: size.height * 0.15,
                           child: Image.asset(
                             'assets/completion.png',
                           ),
@@ -173,7 +169,7 @@ class _AnswerPageState extends State<AnswerPage>
                         (answerProvider.storyAnswer != null)
                             ? Container(
                                 padding: const EdgeInsets.only(top: 10),
-                                height: size.height * 0.3,
+                                height: size.height * 0.2,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -203,9 +199,7 @@ class _AnswerPageState extends State<AnswerPage>
                 ),
               ),
             ),
-          ).animate().moveY(
-                duration: 500.ms,
-              ),
+          ),
           Container(
             height: size.height * 0.2,
             child: TabBarView(
@@ -296,6 +290,20 @@ class _AnswerPageState extends State<AnswerPage>
               ],
             ),
           ),
+          Container(
+            height: 50,
+            width: size.width,
+            color: Colors.pink,
+            child: Center(
+              child: Text(
+                "AD",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          )
         ],
       ),
     ))

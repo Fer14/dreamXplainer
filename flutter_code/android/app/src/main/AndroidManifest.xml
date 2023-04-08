@@ -8,6 +8,7 @@
    <application
         android:label="hello_world"
         android:name="${applicationName}"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -35,5 +36,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7027299532858015~9474067084"/>
     </application>
 </manifest>

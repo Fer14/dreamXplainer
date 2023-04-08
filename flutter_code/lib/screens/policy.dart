@@ -40,6 +40,7 @@ class _PolicyPageState extends State<PolicyPage> {
 
     return Scaffold(
         body: Container(
+          margin: MediaQuery.of(context).padding,
       color: pale_colors.pink,
       child: Column(
         children: <Widget>[
@@ -56,21 +57,16 @@ class _PolicyPageState extends State<PolicyPage> {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 20),
                 child: Container(
                   width: double.infinity,
                   height: size.height * 0.75,
-                  decoration: BoxDecoration(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                          height: size.height * 0.3,
-                          child: Center(
-                            child: Image.asset("assets/sleep.png"),
-                          )),
+                      Container(child: Center(child:Image.asset("assets/logo.png", width: size.width *0.8,) ,),),
                       Text('Hello from the dreamXplainer team!',
                           style: TextStyle(
                             color: colors.brown,

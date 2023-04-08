@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/utils/colors.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/adProvider.dart';
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   const MainAppBar({
@@ -9,46 +13,26 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final adProvider = Provider.of<AdProvider>(context);
+
+
     return AppBar(
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Image.asset('assets/logo.png', width: size.width * 0.1),
+          Padding(padding: EdgeInsets.only(bottom: 10),
+            child:Image.asset("assets/logo.png", width: size.width *0.5,),),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Dream ExplAIner',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                'beta',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                ),
-              )
+              Icon(FontAwesomeIcons.trophy),
+              Text("\t ${adProvider.rewardScore}")
             ],
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                fixedSize: Size(size.height * 0.15, size.height * 0.07),
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                )),
-            onPressed: () async {},
-            child: Text(
-              "Cuota used (0/5)",
-              style: TextStyle(color: Colors.black, fontSize: 10),
-            ),
-          ),
-        ],
-      ),
-      toolbarHeight: size.height * 0.1,
-      backgroundColor: magic_colors.dark_pink,
+          )
+        ],),
+      automaticallyImplyLeading: false,
+      backgroundColor: pale_colors.blue,
+      elevation: 0,
     );
   }
 

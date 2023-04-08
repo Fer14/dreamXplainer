@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-7027299532858015~9474067084</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string> This app uses speech recognition to translate your voice into text.</string>
 	<key>NSMicrophoneUsageDescription</key>

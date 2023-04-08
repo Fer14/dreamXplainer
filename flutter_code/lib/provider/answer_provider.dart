@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 
 class AnswerProvider extends ChangeNotifier {
+
   String? _explanationAnswer;
   String? get explanationAnswer => _explanationAnswer;
 
