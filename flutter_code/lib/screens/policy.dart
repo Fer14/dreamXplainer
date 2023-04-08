@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/provider/answer_provider.dart';
-import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/screens/chat2.dart';
 import 'package:hello_world/screens/mode.dart';
 import 'package:hello_world/utils/colors.dart';
@@ -101,7 +100,7 @@ class _PolicyPageState extends State<PolicyPage> {
               onConfirmation: () => {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ModePage()),
+                  MaterialPageRoute(builder: (context) => Chat2Page()),
                 )
               },
             ),

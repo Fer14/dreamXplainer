@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/provider/answer_provider.dart';
-import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/screens/chat2.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:http/http.dart' as http;

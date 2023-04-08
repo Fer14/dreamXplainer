@@ -45,6 +45,7 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   slide_to_confirm: ^1.1.0
   flutter_animate: ^4.1.0
+  speech_to_text: ^6.1.1
   #getwidget: ^3.0.1
 
 dev_dependencies:

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/provider/answer_provider.dart';
-import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,17 +29,27 @@ class AnswerPage extends StatefulWidget {
   State<AnswerPage> createState() => _AnswerPageState();
 }
 
-class _AnswerPageState extends State<AnswerPage> {
-  late String answer;
+class _AnswerPageState extends State<AnswerPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-    });
+  final _selectedColor = pale_colors.blue;
+  final _unselectedColor = colors.brown;
+  final _tabs = const [
+    Tab(text: 'Explanation'),
+    Tab(text: 'End of dream'),
+  ];
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
   }
 
   @override
@@ -49,10 +59,21 @@ class _AnswerPageState extends State<AnswerPage> {
 
     return Scaffold(
         //appBar: MainAppBar(),
-        body: Container(
+        body: SingleChildScrollView(
+            child: Container(
+      height: size.height * 1.05,
       color: pale_colors.pink,
       child: Column(
         children: <Widget>[
+          Container(
+              color: Colors.white,
+              child: TabBar(
+                controller: _tabController,
+                tabs: _tabs,
+                labelColor: _selectedColor,
+                indicatorColor: _selectedColor,
+                unselectedLabelColor: _unselectedColor,
+              )),
           Container(
             child: Container(
               width: double.infinity,
@@ -69,50 +90,104 @@ class _AnswerPageState extends State<AnswerPage> {
                 padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
                 child: Container(
                   width: double.infinity,
-                  height: size.height * 0.75,
+                  height: size.height * 0.7,
                   decoration: BoxDecoration(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: size.height * 0.2,
-                        child: Image.asset(
-                          'assets/night.png',
+                  child: TabBarView(controller: _tabController, children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Explanation',
+                          style: TextStyle(
+                            color: pale_colors.blue,
+                            fontSize: 30,
+                          ),
                         ),
-                      ),
-                      (answerProvider.answer != null)
-                          ? Container(
-                              child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                        Container(
+                          height: size.height * 0.2,
+                          child: Image.asset(
+                            'assets/explanation.png',
+                          ),
+                        ),
+                        (answerProvider.explanationAnswer != null)
+                            ? Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                height: size.height * 0.3,
+                                child: Column(
                                   children: [
-                                    SingleChildScrollView(
-                                      child: Container(
-                                        padding: const EdgeInsets.only(top: 20),
-                                        height: size.height * 0.4,
-                                        child: Text(
-                                          answerProvider.answer!,
-                                          style: TextStyle(
-                                            color: colors.brown,
-                                            fontSize: 20,
-                                          ),
+                                    Expanded(
+                                        child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Text(
+                                        answerProvider.explanationAnswer!,
+                                        style: TextStyle(
+                                          color: colors.brown,
+                                          fontSize: 20,
                                         ),
                                       ),
-                                    ),
-                                  ]),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 50.0),
-                              child: LoadingAnimationWidget.stretchedDots(
-                                color: pale_colors.blue,
-                                size: 200,
+                                    ))
+                                  ],
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(top: 50.0),
+                                child: LoadingAnimationWidget.stretchedDots(
+                                  color: pale_colors.blue,
+                                  size: 200,
+                                ),
                               ),
-                            ),
-                    ],
-                  ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'End of dream',
+                          style: TextStyle(
+                            color: pale_colors.blue,
+                            fontSize: 30,
+                          ),
+                        ),
+                        Container(
+                          height: size.height * 0.2,
+                          child: Image.asset(
+                            'assets/completion.png',
+                          ),
+                        ),
+                        (answerProvider.storyAnswer != null)
+                            ? Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                height: size.height * 0.3,
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                        child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Text(
+                                        answerProvider.storyAnswer!,
+                                        style: TextStyle(
+                                          color: colors.brown,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(top: 50.0),
+                                child: LoadingAnimationWidget.stretchedDots(
+                                  color: pale_colors.blue,
+                                  size: 200,
+                                ),
+                              ),
+                      ],
+                    )
+                  ]),
                 ),
               ),
             ),
@@ -121,44 +196,97 @@ class _AnswerPageState extends State<AnswerPage> {
               ),
           Container(
             height: size.height * 0.2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: TabBarView(
+              controller: _tabController,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      fixedSize: Size(size.height * 0.1, size.height * 0.1),
-                      backgroundColor: pale_colors.blue,
-                      shape: CircleBorder()),
-                  onPressed: () async {
-                    await Clipboard.setData(
-                        ClipboardData(text: answerProvider.answer!));
-                  },
-                  child: Icon(
-                    Icons.content_copy,
-                    color: Colors.white,
-                    size: 35,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    (answerProvider.explanationAnswer != null)
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize:
+                                    Size(size.height * 0.1, size.height * 0.1),
+                                backgroundColor: pale_colors.blue,
+                                shape: CircleBorder()),
+                            onPressed: () async {
+                              await Clipboard.setData(ClipboardData(
+                                  text: answerProvider.explanationAnswer!));
+                            },
+                            child: Icon(
+                              Icons.content_copy,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          )
+                        : Container(),
+                    (answerProvider.explanationAnswer != null)
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize:
+                                    Size(size.height * 0.1, size.height * 0.1),
+                                backgroundColor: pale_colors.blue,
+                                shape: CircleBorder()),
+                            onPressed: () async {
+                              Share.share(
+                                  answerProvider.explanationAnswer.toString());
+                            },
+                            child: Icon(
+                              FontAwesomeIcons.share,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          )
+                        : Container(),
+                  ],
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      fixedSize: Size(size.height * 0.1, size.height * 0.1),
-                      backgroundColor: pale_colors.blue,
-                      shape: CircleBorder()),
-                  onPressed: () async {
-                    Share.share(answerProvider.answer.toString());
-                  },
-                  child: Icon(
-                    FontAwesomeIcons.share,
-                    color: Colors.white,
-                    size: 35,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    (answerProvider.storyAnswer != null)
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize:
+                                    Size(size.height * 0.1, size.height * 0.1),
+                                backgroundColor: pale_colors.blue,
+                                shape: CircleBorder()),
+                            onPressed: () async {
+                              await Clipboard.setData(ClipboardData(
+                                  text: answerProvider.storyAnswer!));
+                            },
+                            child: Icon(
+                              Icons.content_copy,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          )
+                        : Container(),
+                    (answerProvider.storyAnswer != null)
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize:
+                                    Size(size.height * 0.1, size.height * 0.1),
+                                backgroundColor: pale_colors.blue,
+                                shape: CircleBorder()),
+                            onPressed: () async {
+                              Share.share(
+                                  answerProvider.storyAnswer.toString());
+                            },
+                            child: Icon(
+                              FontAwesomeIcons.share,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          )
+                        : Container()
+                  ],
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
-    )
+    ))
         // This trailing comma makes auto-formatting nicer for build methods.
         );
   }

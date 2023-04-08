@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hello_world/screens/answer.dart';
-import 'package:hello_world/screens/chat.dart';
+import 'package:hello_world/services/voice_handler.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -14,25 +14,19 @@ import '../utils/appbar.dart';
 class Chat2Page extends StatefulWidget {
   const Chat2Page({super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   @override
   State<Chat2Page> createState() => _Chat2PageState();
 }
 
 class _Chat2PageState extends State<Chat2Page> {
   TextEditingController textEditingController = TextEditingController();
+  final VoiceHandler voiceHandler = VoiceHandler();
+  bool isListening = false;
   late String dream;
 
-  void _incrementCounter() {
-    setState(() {});
+  void initState() {
+    super.initState();
+    voiceHandler.initSpeech();
   }
 
   @override
@@ -140,6 +134,15 @@ class _Chat2PageState extends State<Chat2Page> {
               ],
             )),
             Container(
+              child: FloatingActionButton(
+                onPressed: () {
+                  sendVoice();
+                },
+                child: Icon(isListening ? Icons.mic_off : Icons.mic),
+                backgroundColor: pale_colors.dark_pink,
+              ),
+            ),
+            Container(
               width: size.width * 0.35,
               height: size.height * 0.05,
               child: ElevatedButton(
@@ -154,7 +157,8 @@ class _Chat2PageState extends State<Chat2Page> {
                       MaterialStateProperty.all<Color>(pale_colors.blue),
                 ),
                 onPressed: () {
-                  answerProvider.callGPT(textEditingController.text);
+                  answerProvider.explanationGPT(textEditingController.text);
+                  answerProvider.storyGPT(textEditingController.text);
 
                   Navigator.push(
                     context,
@@ -174,6 +178,31 @@ class _Chat2PageState extends State<Chat2Page> {
     )
         // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  void sendVoice() async {
+    if (!voiceHandler.isEnabled) {
+      print('Not supported');
+      return;
+    }
+    if (voiceHandler.speechToText.isListening) {
+      await voiceHandler.stopListening();
+      setState(() {
+        isListening = false;
+      });
+    } else {
+      setState(() {
+        isListening = true;
+      });
+      final result = await voiceHandler.startListening();
+      setState(() {
+        isListening = false;
+      });
+      setState(() {
+        dream = result;
+        textEditingController.text = dream;
+      });
+    }
   }
 
   Widget multiselection() {
@@ -305,7 +334,9 @@ class _Chat2PageState extends State<Chat2Page> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    answerProvider.callGPT(textEditingController.text);
+                    answerProvider.explanationGPT(textEditingController.text);
+                    answerProvider.storyGPT(textEditingController.text);
+
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => AnswerPage()));
                   },

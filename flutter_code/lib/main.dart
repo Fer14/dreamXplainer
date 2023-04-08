@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/provider/answer_provider.dart';
-import 'package:hello_world/screens/chat.dart';
 import 'package:hello_world/onboarding.dart';
 import 'package:hello_world/onboarding2.dart';
-import 'package:hello_world/screens/name.dart';
 import 'package:hello_world/screens/policy.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hello_world/utils/colors.dart';
 
 import 'package:provider/provider.dart';
 
@@ -37,6 +36,10 @@ class MyApp extends StatelessWidget {
               // or simply save your changes to "hot reload" in a Flutter IDE).
               // Notice that the counter didn't reset back to zero; the application
               // is not restarted.
+              scrollbarTheme: ScrollbarThemeData(
+                thumbColor: MaterialStateProperty.all(pale_colors.blue),
+                trackColor: MaterialStateProperty.all(pale_colors.blue),
+              ),
               primarySwatch: Colors.red,
             ),
             home:
