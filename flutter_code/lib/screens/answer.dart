@@ -66,14 +66,26 @@ class _AnswerPageState extends State<AnswerPage>
       child: Column(
         children: <Widget>[
           Container(
-              color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                tabs: _tabs,
-                labelColor: _selectedColor,
-                indicatorColor: _selectedColor,
-                unselectedLabelColor: _unselectedColor,
-              )),
+            height: kToolbarHeight + 8.0,
+            padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
+            decoration: BoxDecoration(
+              color: _selectedColor,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0)),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              indicator: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8.0),
+                      topRight: Radius.circular(8.0)),
+                  color: Colors.white),
+              labelColor: colors.brown,
+              unselectedLabelColor: Colors.white,
+              tabs: _tabs,
+            ),
+          ),
           Container(
             child: Container(
               width: double.infinity,
