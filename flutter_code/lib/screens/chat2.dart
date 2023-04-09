@@ -192,11 +192,11 @@ class _Chat2PageState extends State<Chat2Page> {
           sendVoice();
         },
         child: Icon(isListening ? Icons.mic_off : Icons.mic),
-        backgroundColor: pale_colors.violet,
+        backgroundColor: pale_colors.dark_pink,
       ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar( //bottom navigation bar on scaffold
-        color:pale_colors.dark_pink,
+        color:colors.brown,
         shape: CircularNotchedRectangle(), //shape of notch
         notchMargin: 5, //notche margin between floating button and bottom appbar
         child: Row( //children inside bottom appbar
