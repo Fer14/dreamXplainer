@@ -6,7 +6,11 @@ class AdProvider extends ChangeNotifier {
   int get rewardScore => _rewardScore;
 
   void addReward(){
-    _rewardScore = _rewardScore + 1;
+    _rewardScore++;
+    notifyListeners();
+  }
+  void subReward(){
+    _rewardScore--;
     notifyListeners();
   }
 

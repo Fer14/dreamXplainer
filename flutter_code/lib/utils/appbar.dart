@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/utils/colors.dart';
@@ -26,7 +27,11 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(FontAwesomeIcons.trophy),
-              Text("\t ${adProvider.rewardScore}")
+              SizedBox(width: 5,),
+              AnimatedDigitWidget(
+                value: adProvider.rewardScore,
+                textStyle: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ],
           )
         ],),

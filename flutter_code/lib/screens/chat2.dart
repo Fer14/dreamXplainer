@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../provider/adProvider.dart';
 import '../provider/answer_provider.dart';
 import '../utils/appbar.dart';
@@ -29,11 +31,13 @@ class _Chat2PageState extends State<Chat2Page> {
   late String dream;
   InterstitialAd? _interstitialAd;
   RewardedAd? _rewardedAd;
-  int _rewardScore = 0;
+  late TutorialCoachMark tutorialCoachMark;
+  GlobalKey keyButton = GlobalKey();
 
   void initState() {
     _createInterstitialAd();
     mybanner.load();
+    createTutorial();
     super.initState();
   }
 
@@ -60,6 +64,7 @@ class _Chat2PageState extends State<Chat2Page> {
         })));
   }
 
+
   void showRewardedAd(){
     if (_rewardedAd != null){
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
@@ -74,7 +79,8 @@ class _Chat2PageState extends State<Chat2Page> {
       );
       _rewardedAd!.show(
         onUserEarnedReward: (ad, reward) => setState(() {
-          _rewardScore++;
+          AdProvider adProvider = Provider.of<AdProvider>(context,listen: false);
+          adProvider.addReward();
         })
       );
     }
@@ -98,6 +104,10 @@ class _Chat2PageState extends State<Chat2Page> {
     }
   }
 
+  void showTutorial() {
+    tutorialCoachMark.show(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -106,7 +116,34 @@ class _Chat2PageState extends State<Chat2Page> {
     final adProvider = Provider.of<AdProvider>(context);
 
     return Scaffold(
-        appBar: MainAppBar(),
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(padding: EdgeInsets.only(bottom: 10),
+                child:Image.asset("assets/logo.png", width: size.width *0.5,),),
+              GestureDetector(
+                onTap: (){
+                  showTutorial();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(FontAwesomeIcons.trophy),
+                    SizedBox(width: 5,),
+                    AnimatedDigitWidget(
+                        autoSize: false,
+                          value: adProvider.rewardScore,
+                          textStyle: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ],
+                ),
+              )
+            ],),
+          automaticallyImplyLeading: false,
+          backgroundColor: pale_colors.blue,
+          elevation: 0,
+        ),
         body: SingleChildScrollView(
       child: Container(
         height: size.height * 0.9,
@@ -144,7 +181,7 @@ class _Chat2PageState extends State<Chat2Page> {
               children: [
                 Container(
                     height: size.height * 0.25,
-                    child: Center(child: Image.asset("assets/dream2.png"))),
+                    child: Center(child: Image.asset("assets/dreamer.png"))),
                 Container(
                   width: size.width * 0.8,
                   child: TextField(
@@ -203,15 +240,27 @@ class _Chat2PageState extends State<Chat2Page> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            IconButton(icon: Icon(FontAwesomeIcons.rectangleAd, color: Colors.white,), onPressed: () {},),
+            IconButton(key: keyButton, icon: Icon(FontAwesomeIcons.rectangleAd, color: Colors.white,), onPressed: () {
+              showRewardedAd();
+              adProvider.addReward();
+            },),
             IconButton(icon: Icon(Icons.send, color: Colors.white,), onPressed: () {
-              answerProvider.explanationGPT(textEditingController.text);
-              answerProvider.storyGPT(textEditingController.text);
+              if(adProvider.rewardScore > 0){
+                showInsterstitialAd();
+                adProvider.subReward();
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AnswerPage()),
-              );
+                answerProvider.explanationGPT(textEditingController.text);
+                answerProvider.storyGPT(textEditingController.text);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AnswerPage()),
+                );
+              }
+              else{
+                _showMaterialDialog();
+              }
+
             },),
 
           ],
@@ -219,6 +268,34 @@ class _Chat2PageState extends State<Chat2Page> {
       ),
         // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  void _showMaterialDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Colors.white,
+            title: Text('WARNING', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset("assets/warning.png", width: 200,),
+                Text('Your dont have any dream points left, you can get them by watching ads.',style: TextStyle(color: colors.brown, fontSize: 20)),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+              )
+            ],
+          );
+        });
   }
 
   void sendVoice() async {
@@ -374,6 +451,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 ),
                 child: IconButton(
                   onPressed: () {
+
                     answerProvider.explanationGPT(textEditingController.text);
                     answerProvider.storyGPT(textEditingController.text);
 
@@ -388,4 +466,92 @@ class _Chat2PageState extends State<Chat2Page> {
           ),
         ));
   }
-}
+
+
+  void createTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      pulseEnable: false,
+      targets: _createTargets(),
+      colorShadow: pale_colors.blue,
+      textSkip: "SKIP",
+      textStyleSkip : TextStyle(color: colors.brown, fontWeight: FontWeight.bold),
+      paddingFocus: 0,
+      opacityShadow: 0.9,
+      onFinish: () {
+        print("finish");
+      },
+      onClickTarget: (target) {
+        print('onClickTarget: $target');
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) {
+        print("target: $target");
+        print(
+            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+      },
+      onClickOverlay: (target) {
+        print('onClickOverlay: $target');
+      },
+      onSkip: () {
+        print("skip");
+      },
+    );
+
+
+  }
+
+  List<TargetFocus> _createTargets() {
+    List<TargetFocus> targets = [];
+    targets.add(
+      TargetFocus(
+        enableOverlayTab : true,
+        identify: "keyBottomNavigation1",
+        keyTarget: keyButton,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.Circle,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Container(
+                height: 600,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Center(child: Text(
+                      "Watch ADs to get rewards that can be used for more dreams.",
+                      style: TextStyle(
+                        color: colors.brown,
+                        fontSize: 25,
+                      ),
+                        textAlign: TextAlign.center,
+                    )),
+                    Container(
+                      child:IconButton(icon: Icon(FontAwesomeIcons.rectangleAd, color: colors.brown, size: 40,), onPressed: () {  },),
+                    ),
+                    Center(child: Text(
+                      "Each time you watch an AD, you will get 1 reward.",
+                      style: TextStyle(
+                        color: colors.brown,
+                        fontSize: 25,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
+                    Container(
+                      child:IconButton(icon: Icon(FontAwesomeIcons.trophy, color: colors.brown, size: 40,), onPressed: () {  },),
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+
+    return targets;
+  }
+
+
+  }

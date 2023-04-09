@@ -11,6 +11,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../provider/adProvider.dart';
 import '../utils/appbar.dart';
 
 class AnswerPage extends StatefulWidget {
@@ -32,6 +33,9 @@ class AnswerPage extends StatefulWidget {
 class _AnswerPageState extends State<AnswerPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  int _selectedIndex = 0;
+
+
 
   final _selectedColor = pale_colors.blue;
   final _unselectedColor = colors.brown;
@@ -43,6 +47,11 @@ class _AnswerPageState extends State<AnswerPage>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _selectedIndex = _tabController.index;
+      });
+    });
     super.initState();
   }
 
@@ -162,13 +171,15 @@ class _AnswerPageState extends State<AnswerPage>
                         ),
                         Container(
                           height: size.height * 0.15,
-                          child: Image.asset(
-                            'assets/completion.png',
+                          child: answerProvider.storyError ?
+                          Image.asset(
+                            'assets/server_down.png',
+                          ): Image.asset(
+                            'assets/dream2.png',
                           ),
                         ),
                         (answerProvider.storyAnswer != null)
                             ? Container(
-                                padding: const EdgeInsets.only(top: 10),
                                 height: size.height * 0.2,
                                 child: Column(
                                   children: [
@@ -186,7 +197,26 @@ class _AnswerPageState extends State<AnswerPage>
                                   ],
                                 ),
                               )
-                            : Padding(
+                            : answerProvider.storyError ?
+                            Container(
+                              height: size.height * 0.2,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                      child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Text(
+                                      'There has been an error on server side. Please try again in the following minutes...',
+                                      style: TextStyle(
+                                        color: colors.brown,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ))
+                                ],
+                              ),
+                            ):
+                            Padding(
                                 padding: const EdgeInsets.only(top: 50.0),
                                 child: LoadingAnimationWidget.stretchedDots(
                                   color: pale_colors.blue,
@@ -202,91 +232,17 @@ class _AnswerPageState extends State<AnswerPage>
           ),
           Container(
             height: size.height * 0.2,
-            child: TabBarView(
-              controller: _tabController,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    (answerProvider.explanationAnswer != null)
-                        ? ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize:
-                                    Size(size.height * 0.1, size.height * 0.1),
-                                backgroundColor: pale_colors.blue,
-                                shape: CircleBorder()),
-                            onPressed: () async {
-                              await Clipboard.setData(ClipboardData(
-                                  text: answerProvider.explanationAnswer!));
-                            },
-                            child: Icon(
-                              Icons.content_copy,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          )
-                        : Container(),
-                    (answerProvider.explanationAnswer != null)
-                        ? ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize:
-                                    Size(size.height * 0.1, size.height * 0.1),
-                                backgroundColor: pale_colors.blue,
-                                shape: CircleBorder()),
-                            onPressed: () async {
-                              Share.share(
-                                  answerProvider.explanationAnswer.toString());
-                            },
-                            child: Icon(
-                              FontAwesomeIcons.share,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          )
-                        : Container(),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    (answerProvider.storyAnswer != null)
-                        ? ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize:
-                                    Size(size.height * 0.1, size.height * 0.1),
-                                backgroundColor: pale_colors.blue,
-                                shape: CircleBorder()),
-                            onPressed: () async {
-                              await Clipboard.setData(ClipboardData(
-                                  text: answerProvider.storyAnswer!));
-                            },
-                            child: Icon(
-                              Icons.content_copy,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          )
-                        : Container(),
-                    (answerProvider.storyAnswer != null)
-                        ? ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize:
-                                    Size(size.height * 0.1, size.height * 0.1),
-                                backgroundColor: pale_colors.blue,
-                                shape: CircleBorder()),
-                            onPressed: () async {
-                              Share.share(
-                                  answerProvider.storyAnswer.toString());
-                            },
-                            child: Icon(
-                              FontAwesomeIcons.share,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          )
-                        : Container()
-                  ],
-                )
+                (_selectedIndex == 0) ?
+                (answerProvider.explanationAnswer != null)
+                    ?   copyButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
+                (answerProvider.storyAnswer != null) ? copyButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
+                (_selectedIndex == 0) ?
+                (answerProvider.explanationAnswer != null)
+                    ?   shareButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
+                (answerProvider.storyAnswer != null) ? shareButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
               ],
             ),
           ),
@@ -310,4 +266,46 @@ class _AnswerPageState extends State<AnswerPage>
         // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
+
+  Widget copyButton(Size size, AnswerProvider answerProvider, text){
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          fixedSize:
+          Size(size.height * 0.1, size.height * 0.1),
+          backgroundColor: pale_colors.blue,
+          shape: CircleBorder()),
+      onPressed: () async {
+        await Clipboard.setData(ClipboardData(
+            text: text!));
+      },
+      child: Icon(
+        Icons.content_copy,
+        color: Colors.white,
+        size: 35,
+      ),
+    );
+  }
+
+  Widget shareButton(Size size, AnswerProvider answerProvider, text){
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          fixedSize:
+          Size(size.height * 0.1, size.height * 0.1),
+          backgroundColor: pale_colors.blue,
+          shape: CircleBorder()),
+      onPressed: () async {
+        Share.share(
+            text.toString());
+      },
+      child: Icon(
+        FontAwesomeIcons.share,
+        color: Colors.white,
+        size: 35,
+      ),
+    );
+  }
+
+
+
+
 }
