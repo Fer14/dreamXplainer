@@ -109,7 +109,7 @@ class _PolicyPageState extends State<PolicyPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(child: Center(child:Image.asset("assets/logo.png", width: size.width *0.8,) ,),),
+                      Container(child: Center(child:Image.asset("assets/logo_nunito.png", width: size.width *0.8,) ,),),
                       Text('Hello from the dreamXplainer team!',
                           style: TextStyle(
                             color: colors.brown,

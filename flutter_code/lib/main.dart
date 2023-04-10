@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
               ),
               //set pale_colors.blue as primarySwatch color
               primaryColor: pale_colors.blue,
+              fontFamily: 'Nunito'
             ),
             home: AnimatedSplashScreen(
                 duration: 1500,

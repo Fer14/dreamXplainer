@@ -103,7 +103,7 @@ class _Chat2PageState extends State<Chat2Page> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Padding(padding: EdgeInsets.only(bottom: 10),
-                child:Image.asset("assets/logo.png", width: size.width *0.5,),),
+                child:Image.asset("assets/logo_nunito.png", width: size.width *0.5,),),
               GestureDetector(
                 onTap: (){
                   showTutorial();
