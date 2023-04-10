@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
               primaryColor: pale_colors.blue,
             ),
             home: AnimatedSplashScreen(
-                duration: 1000,
+                duration: 1500,
                 splash: Image.asset('assets/icon.png',),
                 splashIconSize: 224,
                 nextScreen: PolicyPage() ,
