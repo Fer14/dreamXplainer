@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../ads/ad_mob_service.dart';
 import '../provider/adProvider.dart';
 import '../utils/appbar.dart';
 
@@ -34,18 +36,20 @@ class _AnswerPageState extends State<AnswerPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-
-
-
   final _selectedColor = pale_colors.blue;
-  final _unselectedColor = colors.brown;
   final _tabs = const [
     Tab(text: 'Explanation'),
     Tab(text: 'End of dream'),
   ];
+  final BannerAd mybanner = BannerAd(
+      size: AdSize.fullBanner,
+      adUnitId: AdMobService.bannerAdUnitId2!,
+      listener: AdMobService.bannerListener,
+      request: const AdRequest());
 
   @override
   void initState() {
+    mybanner.load();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
@@ -53,6 +57,9 @@ class _AnswerPageState extends State<AnswerPage>
       });
     });
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   @override
@@ -231,7 +238,7 @@ class _AnswerPageState extends State<AnswerPage>
             ),
           ),
           Container(
-            height: size.height * 0.2,
+            height: size.height * 0.15,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -241,23 +248,20 @@ class _AnswerPageState extends State<AnswerPage>
                 (answerProvider.storyAnswer != null) ? copyButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
                 (_selectedIndex == 0) ?
                 (answerProvider.explanationAnswer != null)
+                    ?   calendarButton( size,  answerProvider.explanationAnswer) : Container() :
+                (answerProvider.storyAnswer != null) ? calendarButton( size,   answerProvider.storyAnswer) : Container() ,
+                (_selectedIndex == 0) ?
+                (answerProvider.explanationAnswer != null)
                     ?   shareButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
                 (answerProvider.storyAnswer != null) ? shareButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
               ],
             ),
           ),
-          Container(
-            height: 50,
-            width: size.width,
-            color: Colors.pink,
-            child: Center(
-              child: Text(
-                "AD",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
+          Center(
+            child: Container(
+              height: mybanner.size.height.toDouble(),
+              width: mybanner.size.width.toDouble(),
+              child: AdWidget(ad: mybanner),
             ),
           )
         ],
@@ -265,6 +269,48 @@ class _AnswerPageState extends State<AnswerPage>
     ))
         // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  Widget calendarButton(Size size, dream) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          fixedSize:
+              Size(size.height * 0.1, size.height * 0.1),
+          backgroundColor: pale_colors.yellow,
+          shape: CircleBorder()),
+      onPressed: () async {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                backgroundColor: Colors.white,
+                title: Text('COMMING SOON', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset("assets/calendar_blue.png", width: 200,),
+                    Text('This feature will be available in the next update.',style: TextStyle(color: colors.brown, fontSize: 20)),
+                  ],
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                  )
+                ],
+              );
+            });
+      },
+      child: Icon(
+        FontAwesomeIcons.calendarPlus,
+        color: colors.brown,
+        size: 35,
+      ),
+    );
   }
 
   Widget copyButton(Size size, AnswerProvider answerProvider, text){

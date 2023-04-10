@@ -14,6 +14,16 @@ class AdMobService{
     return null;
   }
 
+  static String? get bannerAdUnitId2 {
+    if(Platform.isAndroid){
+      return 'ca-app-pub-7027299532858015/9513132515';
+    }else if (Platform.isIOS){
+      return 'ca-app-pub-7027299532858015/2193794122';
+    }
+    return null;
+  }
+
+
   static final BannerAdListener bannerListener = BannerAdListener(
     onAdLoaded: (ad) => print('Ad loaded'),
     onAdFailedToLoad: (ad,error) {
@@ -21,6 +31,8 @@ class AdMobService{
       print("error to load ad: ${error}");
     }
   );
+
+
 
   static String? get interstitialAdUnitId {
     if(Platform.isAndroid){

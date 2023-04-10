@@ -1,5 +1,6 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/ads/ad_mob_service.dart';
@@ -35,10 +36,13 @@ class _Chat2PageState extends State<Chat2Page> {
   GlobalKey keyButton = GlobalKey();
 
   void initState() {
-    _createInterstitialAd();
     mybanner.load();
+    _createRewardedAd();
     createTutorial();
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   final BannerAd mybanner = BannerAd(
@@ -47,13 +51,6 @@ class _Chat2PageState extends State<Chat2Page> {
       listener: AdMobService.bannerListener,
       request: const AdRequest());
 
-  void _createInterstitialAd(){
-    InterstitialAd.load(
-      adUnitId : AdMobService.interstitialAdUnitId!,
-      request : const AdRequest(),
-      adLoadCallback : InterstitialAdLoadCallback(onAdLoaded: (ad)=> _interstitialAd = ad , onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null)
-    );
-  }
 
   void _createRewardedAd(){
     RewardedAd.load(adUnitId: AdMobService.reardedAdUnitId!, request: const AdRequest(),
@@ -79,7 +76,7 @@ class _Chat2PageState extends State<Chat2Page> {
       );
       _rewardedAd!.show(
         onUserEarnedReward: (ad, reward) => setState(() {
-          AdProvider adProvider = Provider.of<AdProvider>(context,listen: false);
+          final adProvider = Provider.of<AdProvider>(context, listen: false);
           adProvider.addReward();
         })
       );
@@ -87,22 +84,7 @@ class _Chat2PageState extends State<Chat2Page> {
   }
 
 
-  void showInsterstitialAd(){
-    if (_interstitialAd != null){
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad,error){
-          ad.dispose();
-          _createInterstitialAd();
-      }
-      );
-      _interstitialAd!.show();
-      _interstitialAd = null;
-    }
-  }
+
 
   void showTutorial() {
     tutorialCoachMark.show(context: context);
@@ -173,7 +155,7 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             Container(
-              child: multiselection(),
+              child: multiselection(size),
             ),
             Container(
                 child: Stack(
@@ -210,7 +192,7 @@ class _Chat2PageState extends State<Chat2Page> {
                       )),
                     ),
                     keyboardType: TextInputType.multiline,
-                    maxLines: 14,
+                    maxLines: 12,
                   ),
                 ),
               ],
@@ -242,11 +224,11 @@ class _Chat2PageState extends State<Chat2Page> {
           children: <Widget>[
             IconButton(key: keyButton, icon: Icon(FontAwesomeIcons.rectangleAd, color: Colors.white,), onPressed: () {
               showRewardedAd();
-              adProvider.addReward();
+
             },),
             IconButton(icon: Icon(Icons.send, color: Colors.white,), onPressed: () {
               if(adProvider.rewardScore > 0){
-                showInsterstitialAd();
+
                 adProvider.subReward();
 
                 answerProvider.explanationGPT(textEditingController.text);
@@ -322,88 +304,128 @@ class _Chat2PageState extends State<Chat2Page> {
     }
   }
 
-  Widget multiselection() {
+  Widget multiselection(Size size) {
     return Container(
-      child: MultiSelectContainer(
-          maxSelectableCount: 2,
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 14,
+      width: size.width * 0.9,
+      child: Center(
+        child: MultiSelectContainer(
+            maxSelectableCount: 2,
+            prefix: MultiSelectPrefix(
+              selectedPrefix: const Padding(
+                padding: EdgeInsets.only(right: 5),
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 14,
+                ),
               ),
             ),
-          ),
-          items: [
-            MultiSelectCard(
-              value: 'Funny',
-              label: 'Funny',
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.violet.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.violet,
-                    borderRadius: BorderRadius.circular(5)),
+            items: [
+              MultiSelectCard(
+                value: 'Funny',
+                label: 'Funny',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.violet.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.violet,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
               ),
-            ),
-            MultiSelectCard(
-              value: 'Detailed',
-              label: 'Detailed',
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.pink.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.pink,
-                    borderRadius: BorderRadius.circular(5)),
+              MultiSelectCard(
+                value: 'Romantic',
+                label: 'Romantic',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.pink.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.pink,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
               ),
-            ),
-            MultiSelectCard(
-              value: 'Random',
-              label: 'Random',
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.dark_pink.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.dark_pink,
-                    borderRadius: BorderRadius.circular(5)),
+              MultiSelectCard(
+                value: 'Romantic',
+                label: 'Romantic',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.dark_pink.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.dark_pink,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
               ),
-            ),
-            MultiSelectCard(
-              value: 'Love',
-              label: 'Love',
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.light_blue.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.light_blue,
-                    borderRadius: BorderRadius.circular(5)),
+              MultiSelectCard(
+                value: 'Love',
+                label: 'Love',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: magic_colors.dark_pink.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: magic_colors.dark_pink,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
               ),
-            ),
-            MultiSelectCard(
-              value: 'Sad',
-              label: 'Sad',
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.yellow.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.yellow,
-                    borderRadius: BorderRadius.circular(5)),
+              MultiSelectCard(
+                value: 'Tarantino',
+                label: 'Tarantino',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.light_blue.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.light_blue,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
               ),
-            ),
-          ],
-          onMaximumSelected: (allSelectedItems, selectedItem) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                backgroundColor: magic_colors.dark_pink,
-                content: Text('You can only select 2 options at a time')));
-          },
-          onChange: (allSelectedItems, selectedItem) {}),
+              MultiSelectCard(
+                value: 'Action',
+                label: 'Action',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.blue.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.blue,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+              MultiSelectCard(
+                value: 'Sad',
+                label: 'Sad',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.yellow.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.yellow,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+              MultiSelectCard(
+                value: 'Serious',
+                label: 'Serious',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.green.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.green,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+            ],
+
+            onMaximumSelected: (allSelectedItems, selectedItem) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: magic_colors.dark_pink,
+                  content: Text('You can only select 2 options at a time')));
+            },
+            onChange: (allSelectedItems, selectedItem) {}),
+      ),
     );
   }
 

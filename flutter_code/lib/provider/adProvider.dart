@@ -5,7 +5,8 @@ class AdProvider extends ChangeNotifier {
   int _rewardScore = 0;
   int get rewardScore => _rewardScore;
 
-  void addReward(){
+  Future<void> addReward() async {
+    await Future.delayed(Duration(seconds: 1));
     _rewardScore++;
     notifyListeners();
   }

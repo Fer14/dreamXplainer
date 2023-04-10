@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat2.dart';
 import 'package:hello_world/screens/mode.dart';
@@ -11,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-
+import 'package:flutter/services.dart';
+import '../ads/ad_mob_service.dart';
 import '../utils/appbar.dart';
 import '../utils/policy_text.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
@@ -33,6 +35,47 @@ class PolicyPage extends StatefulWidget {
 }
 
 class _PolicyPageState extends State<PolicyPage> {
+  InterstitialAd? _interstitialAd;
+
+
+  @override
+  void initState(){
+    _createInterstitialAd();
+
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
+
+  void _createInterstitialAd(){
+    InterstitialAd.load(
+        adUnitId : AdMobService.interstitialAdUnitId!,
+        request : const AdRequest(),
+        adLoadCallback : InterstitialAdLoadCallback(onAdLoaded: (ad)=> _interstitialAd = ad , onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null)
+    );
+  }
+
+  void showInsterstitialAd(){
+    if (_interstitialAd != null){
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            ad.dispose();
+            _createInterstitialAd();
+          },
+          onAdFailedToShowFullScreenContent: (ad,error){
+            ad.dispose();
+            _createInterstitialAd();
+          }
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    }
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -94,10 +137,11 @@ class _PolicyPageState extends State<PolicyPage> {
                 fontSize: 20,
               ),
               onConfirmation: () => {
+                showInsterstitialAd(),
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Chat2Page()),
-                )
+                    context,
+                    MaterialPageRoute(builder: (context) => Chat2Page()),
+                  )
               },
             ),
           )
@@ -107,4 +151,6 @@ class _PolicyPageState extends State<PolicyPage> {
         // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
+
+
 }

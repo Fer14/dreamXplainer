@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            title: 'dreamXplainer',
             theme: ThemeData(
               // This is the theme of your application.
               //
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
                 splash: Image.asset('assets/icon.png',),
                 splashIconSize: 224,
                 nextScreen: PolicyPage() ,
-                splashTransition: SplashTransition.fadeTransition,
+                splashTransition: SplashTransition.scaleTransition,
                 backgroundColor: pale_colors.blue))//const MyHomePage(title: 'Flutter Demo Home Page'),
             );
   }
