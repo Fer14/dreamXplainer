@@ -170,7 +170,7 @@ class _AnswerPageState extends State<AnswerPage>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'End of dream',
+                          "If you hadn't woken up...",
                           style: TextStyle(
                             color: pale_colors.blue,
                             fontSize: 25,

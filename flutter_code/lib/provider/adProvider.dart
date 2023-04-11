@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AdProvider extends ChangeNotifier {
 
-  int _rewardScore = 0;
+  int _rewardScore = 5;
   int get rewardScore => _rewardScore;
 
   Future<void> addReward() async {

@@ -39,6 +39,9 @@ class _Chat2PageState extends State<Chat2Page> {
     mybanner.load();
     _createRewardedAd();
     createTutorial();
+    if (!voiceHandler.isEnabled) {
+      voiceHandler.initSpeech();
+    }
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -63,6 +66,7 @@ class _Chat2PageState extends State<Chat2Page> {
 
 
   void showRewardedAd(){
+
     if (_rewardedAd != null){
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad){
@@ -80,6 +84,9 @@ class _Chat2PageState extends State<Chat2Page> {
           adProvider.addReward();
         })
       );
+    }
+    else{
+      showAddErrorDialog();
     }
   }
 
@@ -102,8 +109,7 @@ class _Chat2PageState extends State<Chat2Page> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(padding: EdgeInsets.only(bottom: 10),
-                child:Image.asset("assets/logo_nunito.png", width: size.width *0.5,),),
+              Image.asset("assets/name_blue.png", width: size.width *0.5,),
               GestureDetector(
                 onTap: (){
                   showTutorial();
@@ -111,7 +117,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(FontAwesomeIcons.trophy),
+                    Image.asset("assets/icon.png", width: size.width *0.1,),
                     SizedBox(width: 5,),
                     AnimatedDigitWidget(
                         autoSize: false,
@@ -281,9 +287,6 @@ class _Chat2PageState extends State<Chat2Page> {
   }
 
   void sendVoice() async {
-    if (!voiceHandler.isEnabled) {
-      voiceHandler.initSpeech();
-    }
     if (voiceHandler.speechToText.isListening) {
       await voiceHandler.stopListening();
       setState(() {
@@ -553,7 +556,7 @@ class _Chat2PageState extends State<Chat2Page> {
                       child:IconButton(icon: Icon(FontAwesomeIcons.rectangleAd, color: colors.brown, size: 40,), onPressed: () {  },),
                     ),
                     Center(child: Text(
-                      "Each time you watch an AD, you will get 1 reward.",
+                      "Each time you watch an AD, you will get 1 dream.",
                       style: TextStyle(
                         color: colors.brown,
                         fontSize: 25,
@@ -561,7 +564,7 @@ class _Chat2PageState extends State<Chat2Page> {
                       textAlign: TextAlign.center,
                     )),
                     Container(
-                      child:IconButton(icon: Icon(FontAwesomeIcons.trophy, color: colors.brown, size: 40,), onPressed: () {  },),
+                      child: Image.asset("assets/icon.png", width: 100,),
                     )
                   ],
                 ),
@@ -573,6 +576,34 @@ class _Chat2PageState extends State<Chat2Page> {
     );
 
     return targets;
+  }
+
+  void showAddErrorDialog(){
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Colors.white,
+            title: Text('ERROR', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset("assets/error.png", width: 200,),
+                Text('Ad could not load, please try again in the following minutes.',style: TextStyle(color: colors.brown, fontSize: 20)),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+              )
+            ],
+          );
+        });
   }
 
 

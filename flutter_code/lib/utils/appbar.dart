@@ -22,13 +22,14 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(padding: EdgeInsets.only(bottom: 10),
-            child:Image.asset("assets/logo_nunito.png", width: size.width *0.5,),),
+            child:Image.asset("assets/name_blue.png", width: size.width *0.5,),),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(FontAwesomeIcons.trophy),
+              Image.asset("assets/icon.png", width: size.width *0.1,),
               SizedBox(width: 5,),
               AnimatedDigitWidget(
+                autoSize: false,
                 value: adProvider.rewardScore,
                 textStyle: TextStyle(color: Colors.white, fontSize: 20),
               ),
