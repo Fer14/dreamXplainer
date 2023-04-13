@@ -114,7 +114,7 @@ class _PolicyPageState extends State<PolicyPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(child: Center(child:Image.asset("assets/logo_nunito.png", width: size.width *0.8,) ,),),
+                        Container(child: Center(child:Image.asset("assets/better_logo.png", width: size.width *0.8,) ,),),
                         userTextField(size),
                         passwordTextField(size),
                       ],
@@ -135,14 +135,18 @@ class _PolicyPageState extends State<PolicyPage> {
                 ),
                 text: !error ? "Slide to confirm" : "Data incorrect",
                 onConfirmation: () => {
-                  setState(() {
-                    error = !error;
-                  }),
-                  showInsterstitialAd(),
-                  Navigator.push(
+                  if (userController.text == "error"){
+                    setState(() {
+                      error = !error;
+                    })
+                  } else {
+                    showInsterstitialAd(),
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Chat2Page()),
                     )
+                  }
+
                 },
               ),
             )
