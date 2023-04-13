@@ -4,7 +4,7 @@ import 'package:hello_world/provider/adProvider.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/onboarding.dart';
 import 'package:hello_world/onboarding2.dart';
-import 'package:hello_world/screens/policy.dart';
+import 'package:hello_world/screens/login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hello_world/utils/colors.dart';
