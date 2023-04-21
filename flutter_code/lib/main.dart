@@ -1,23 +1,30 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hello_world/provider/adProvider.dart';
 import 'package:hello_world/provider/answer_provider.dart';
-import 'package:hello_world/onboarding.dart';
-import 'package:hello_world/onboarding2.dart';
 import 'package:hello_world/screens/login.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
-import 'package:page_transition/page_transition.dart';
 
-void main() {
+
+
+Future<void> main() async {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+  await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
+  await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

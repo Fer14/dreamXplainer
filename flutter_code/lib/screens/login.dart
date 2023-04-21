@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat2.dart';
-import 'package:hello_world/screens/mode.dart';
+import 'package:hello_world/screens/register.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import '../ads/ad_mob_service.dart';
+import '../provider/adProvider.dart';
 import '../utils/appbar.dart';
 import '../utils/policy_text.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
@@ -43,6 +47,7 @@ class _PolicyPageState extends State<PolicyPage> {
 
   @override
   void initState(){
+
     _createInterstitialAd();
 
     super.initState();
@@ -83,6 +88,8 @@ class _PolicyPageState extends State<PolicyPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final answerProvider = Provider.of<AnswerProvider>(context);
+    final adProvider = Provider.of<AdProvider>(context);
+
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -105,7 +112,7 @@ class _PolicyPageState extends State<PolicyPage> {
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 20),
+                  padding: EdgeInsetsDirectional.fromSTEB(20, 0, 0, 20),
                   child: Container(
                     width: double.infinity,
                     height: size.height * 0.75,
@@ -117,6 +124,7 @@ class _PolicyPageState extends State<PolicyPage> {
                         Container(child: Center(child:Image.asset("assets/better_logo.png", width: size.width *0.8,) ,),),
                         userTextField(size),
                         passwordTextField(size),
+                        register_link(size),
                       ],
                     ),
                   ),
@@ -135,18 +143,7 @@ class _PolicyPageState extends State<PolicyPage> {
                 ),
                 text: !error ? "Slide to confirm" : "Data incorrect",
                 onConfirmation: () => {
-                  if (userController.text == "error"){
-                    setState(() {
-                      error = !error;
-                    })
-                  } else {
-                    showInsterstitialAd(),
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Chat2Page()),
-                    )
-                  }
-
+                  login(userController.text, passController.text, adProvider)
                 },
               ),
             )
@@ -157,6 +154,49 @@ class _PolicyPageState extends State<PolicyPage> {
         // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
+
+  Widget register_link(Size size) {
+    return StreamBuilder(
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return Container(
+            width: size.width * 0.7,
+            margin: EdgeInsets.symmetric(horizontal: size.width * 0.13, vertical: size.height * 0.03),
+            //padding: EdgeInsets.symmetric(horizontal: size.width * 0.13, vertical: size.height * 0.07),
+            height: size.height * 0.09,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account?  ",
+                    style: TextStyle(
+                      color: colors.brown,
+                    ),
+                  ),
+                  GestureDetector(
+                    child: Text(
+                      "Register.",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: pale_colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
 
 
   Widget userTextField(Size size) {
@@ -220,6 +260,80 @@ Widget passwordTextField(Size size) {
         );
       });
 }
+
+
+Future<void> login(user, pass, AdProvider provider) async {
+    if (user.isEmpty || pass.isEmpty){
+      setState(() {
+        error = true;
+      });
+    } else {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: user,
+          password: pass,
+        );
+        setState(() {
+          error = false;
+        });
+        var credential = FirebaseAuth.instance.currentUser;
+        if (credential!.emailVerified) {
+          final doc = FirebaseFirestore.instance.collection('user-coins').doc(
+              credential!.email);
+          doc.get().then((value) {
+            provider.rewardScore = value['coins'];
+          });
+          GetStorage().write('email', credential!.email);
+          showInsterstitialAd();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Chat2Page()),
+          );
+        }
+        else{
+          setState(() {
+            error = true;
+          });
+          _showErrorDialog();
+        }
+      }
+      on Exception catch (e) {
+        //_showErrorDialog();
+        setState(() {
+          error = true;
+        });
+      }
+    }
+}
+
+
+  void _showErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Colors.white,
+            title: Text('ERROR!', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset("assets/email_verification.png", width: 200,),
+                Text('You need to verify your email.',style: TextStyle(color: colors.brown, fontSize: 20)),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+              )
+            ],
+          );
+        });
+  }
 
 
 }

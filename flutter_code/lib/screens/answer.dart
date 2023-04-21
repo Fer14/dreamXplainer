@@ -49,6 +49,7 @@ class _AnswerPageState extends State<AnswerPage>
 
   @override
   void initState() {
+
     mybanner.load();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
@@ -72,6 +73,8 @@ class _AnswerPageState extends State<AnswerPage>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final answerProvider = Provider.of<AnswerProvider>(context);
+
+
 
     return Scaffold(
         appBar:  MainAppBar(),

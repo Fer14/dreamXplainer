@@ -36,6 +36,7 @@ class _Chat2PageState extends State<Chat2Page> {
   GlobalKey keyButton = GlobalKey();
 
   void initState() {
+
     mybanner.load();
     _createRewardedAd();
     createTutorial();
@@ -104,6 +105,9 @@ class _Chat2PageState extends State<Chat2Page> {
     final answerProvider = Provider.of<AnswerProvider>(context);
     final adProvider = Provider.of<AdProvider>(context);
 
+
+
+
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -151,7 +155,7 @@ class _Chat2PageState extends State<Chat2Page> {
               width: size.width * 0.8,
               child: Center(
                 child: Text(
-                  "Write your dream and choose the way in chich you want it to be explained and finnished.",
+                  "Describe your most recent dream and choose the way in which you want it to be interpreted and finished:",
                   style: TextStyle(
                     color: colors.brown,
                     fontSize: 20,
@@ -401,10 +405,10 @@ class _Chat2PageState extends State<Chat2Page> {
                 label: 'Sad',
                 decorations: MultiSelectItemDecorations(
                   decoration: BoxDecoration(
-                      color: pale_colors.yellow.withOpacity(0.8),
+                      color: pale_colors.orange.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(20)),
                   selectedDecoration: BoxDecoration(
-                      color: pale_colors.yellow,
+                      color: pale_colors.orange,
                       borderRadius: BorderRadius.circular(20)),
                 ),
               ),
