@@ -37,6 +37,7 @@ class _Chat2PageState extends State<Chat2Page> {
   RewardedAd? _rewardedAd;
   late TutorialCoachMark tutorialCoachMark;
   GlobalKey keyButton = GlobalKey();
+  String tag_selected = "";
 
   void initState() {
 
@@ -249,14 +250,24 @@ class _Chat2PageState extends State<Chat2Page> {
               },),
               IconButton(icon: Icon(Icons.send, color: Colors.white,), onPressed: () {
                 if(answerProvider.rewardScore > 0){
-                  answerProvider.callGPT(textEditingController.text);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AnswerPage()),
-                  );
+                  if(textEditingController.text != "") {
+                    if(tag_selected != ""){
+                      answerProvider.callGPT(textEditingController.text, tag_selected!);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AnswerPage()),
+                      );
+                    }
+                    else{
+                      _showMaterialDialog("assets/select.png","You must select a tag");
+                    }
+                  }
+                  else{
+                    _showMaterialDialog("assets/empty.png","Your dream is empty, please write something.");
+                  }
                 }
                 else{
-                  _showMaterialDialog();
+                  _showMaterialDialog("assets/warning.png",'You dont have any dream points left, you can get them by watching ads.');
                 }
 
               },),
@@ -308,7 +319,7 @@ class _Chat2PageState extends State<Chat2Page> {
         });
   }
 
-  void _showMaterialDialog() {
+  void _showMaterialDialog(image, text) {
     showDialog(
         context: context,
         builder: (context) {
@@ -320,8 +331,8 @@ class _Chat2PageState extends State<Chat2Page> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset("assets/warning.png", width: 200,),
-                Text('Your dont have any dream points left, you can get them by watching ads.',style: TextStyle(color: colors.brown, fontSize: 20)),
+                Image.asset(image, width: 200,),
+                Text(text,style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
             actions: <Widget>[
@@ -362,7 +373,12 @@ class _Chat2PageState extends State<Chat2Page> {
       width: size.width * 0.9,
       child: Center(
         child: MultiSelectContainer(
-            maxSelectableCount: 2,
+            onChange: (allSelectedItems, selectedItem) {
+              setState(() {
+                tag_selected = selectedItem;
+              });
+            },
+            maxSelectableCount: 1,
             prefix: MultiSelectPrefix(
               selectedPrefix: const Padding(
                 padding: EdgeInsets.only(right: 5),
@@ -387,50 +403,14 @@ class _Chat2PageState extends State<Chat2Page> {
                 ),
               ),
               MultiSelectCard(
-                value: 'Romantic',
-                label: 'Romantic',
+                value: 'Horror',
+                label: 'Horror',
                 decorations: MultiSelectItemDecorations(
                   decoration: BoxDecoration(
                       color: pale_colors.pink.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(20)),
                   selectedDecoration: BoxDecoration(
                       color: pale_colors.pink,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Romantic',
-                label: 'Romantic',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.dark_pink.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.dark_pink,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Love',
-                label: 'Love',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: magic_colors.dark_pink.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: magic_colors.dark_pink,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Tarantino',
-                label: 'Tarantino',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.light_blue.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.light_blue,
                       borderRadius: BorderRadius.circular(20)),
                 ),
               ),
@@ -447,18 +427,6 @@ class _Chat2PageState extends State<Chat2Page> {
                 ),
               ),
               MultiSelectCard(
-                value: 'Sad',
-                label: 'Sad',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.orange.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.orange,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
                 value: 'Serious',
                 label: 'Serious',
                 decorations: MultiSelectItemDecorations(
@@ -470,77 +438,69 @@ class _Chat2PageState extends State<Chat2Page> {
                       borderRadius: BorderRadius.circular(20)),
                 ),
               ),
+              MultiSelectCard(
+                value: 'Romantic',
+                label: 'Romantic',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.dark_pink.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.dark_pink,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+              MultiSelectCard(
+                value: 'Tarantino',
+                label: 'Tarantino',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.red.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.red,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+
+              MultiSelectCard(
+                value: 'Sad',
+                label: 'Sad',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.orange.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.orange,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+
+              MultiSelectCard(
+                value: 'Fantasy',
+                label: 'Fantasy',
+                decorations: MultiSelectItemDecorations(
+                  decoration: BoxDecoration(
+                      color: pale_colors.light_blue.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20)),
+                  selectedDecoration: BoxDecoration(
+                      color: pale_colors.light_blue,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
             ],
 
             onMaximumSelected: (allSelectedItems, selectedItem) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   backgroundColor: magic_colors.dark_pink,
-                  content: Text('You can only select 2 options at a time')));
+                  content: Text('You can only select 1 options at a time')));
             },
-            onChange: (allSelectedItems, selectedItem) {}),
+            ),
       ),
     );
   }
 
-  Widget buildMessageInput(AnswerProvider answerProvider) {
-    return SizedBox(
-        width: double.infinity,
-        height: 50,
-        child: Container(
-          color: Colors.white,
-          child: Row(
-            children: [
-              Flexible(
-                  child: TextField(
-                cursorColor: colors.brown,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(left: 10),
-                  hintText: "Type your dream",
-                  hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder.none,
-                ),
-                textInputAction: TextInputAction.send,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.sentences,
-                controller: textEditingController,
-                onChanged: (value) => setState(() => dream = value),
-                onSubmitted: (value) {
-                  //onSendMessage(textEditingController.text, MessageType.text);
-                },
-              )),
-              // Container(
-              //   decoration: BoxDecoration(
-              //     color: Colors.white,
-              //   ),
-              //   child: IconButton(
-              //     onPressed: () {
-              //       //onSendMessage(textEditingController.text, MessageType.text);
-              //     },
-              //     icon: const Icon(Icons.keyboard_voice_rounded),
-              //     color: magic_colors.dark_pink,
-              //   ),
-              // ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: IconButton(
-                  onPressed: () {
 
-                    answerProvider.explanationGPT(textEditingController.text);
-                    answerProvider.storyGPT(textEditingController.text);
-
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AnswerPage()));
-                  },
-                  icon: const Icon(Icons.send_rounded),
-                  color: colors.brown,
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
 
 
   void createTutorial() {
