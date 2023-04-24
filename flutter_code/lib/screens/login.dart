@@ -17,8 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import '../ads/ad_mob_service.dart';
-import '../provider/adProvider.dart';
 import '../utils/appbar.dart';
+import '../utils/global_vars.dart';
 import '../utils/policy_text.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 
@@ -44,6 +44,7 @@ class _PolicyPageState extends State<PolicyPage> {
   final userController = TextEditingController();//controllador para el textform del usuario
   final passController = TextEditingController();
   bool error = false;
+  bool keep = false;
 
   @override
   void initState(){
@@ -88,7 +89,6 @@ class _PolicyPageState extends State<PolicyPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final answerProvider = Provider.of<AnswerProvider>(context);
-    final adProvider = Provider.of<AdProvider>(context);
 
 
     return Scaffold(
@@ -118,12 +118,13 @@ class _PolicyPageState extends State<PolicyPage> {
                     height: size.height * 0.75,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(child: Center(child:Image.asset("assets/better_logo.png", width: size.width *0.8,) ,),),
+                        Image.asset("assets/better_logo.png", width: size.width *0.7,),
                         userTextField(size),
                         passwordTextField(size),
+                        checkSession(size),
                         register_link(size),
                       ],
                     ),
@@ -143,7 +144,7 @@ class _PolicyPageState extends State<PolicyPage> {
                 ),
                 text: !error ? "Slide to confirm" : "Data incorrect",
                 onConfirmation: () => {
-                  login(userController.text, passController.text, adProvider)
+                  login(userController.text, passController.text, answerProvider)
                 },
               ),
             )
@@ -155,12 +156,41 @@ class _PolicyPageState extends State<PolicyPage> {
         );
   }
 
+  Widget checkSession(Size size){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: size.width * 0.2, vertical: size.height * 0.01),
+      color: Colors.white,
+      child: Row(
+        children: [
+          Checkbox(
+            checkColor: Colors.white,
+            fillColor:
+            MaterialStateProperty.all(pale_colors.blue),
+            shape: const CircleBorder(),
+            value: keep,
+            onChanged: (value) {
+              setState(() {
+                keep = value!;
+              });
+            },
+          ),
+          Text(
+            "Keep me logged in",
+            style: TextStyle(
+              color: colors.brown,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget register_link(Size size) {
     return StreamBuilder(
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Container(
             width: size.width * 0.7,
-            margin: EdgeInsets.symmetric(horizontal: size.width * 0.13, vertical: size.height * 0.03),
+            margin: EdgeInsets.symmetric(horizontal: size.width * 0.13, vertical: size.height * 0.01),
             //padding: EdgeInsets.symmetric(horizontal: size.width * 0.13, vertical: size.height * 0.07),
             height: size.height * 0.09,
             child: Center(
@@ -262,7 +292,7 @@ Widget passwordTextField(Size size) {
 }
 
 
-Future<void> login(user, pass, AdProvider provider) async {
+Future<void> login(user, pass, AnswerProvider provider) async {
     if (user.isEmpty || pass.isEmpty){
       setState(() {
         error = true;
@@ -284,6 +314,13 @@ Future<void> login(user, pass, AdProvider provider) async {
             provider.rewardScore = value['coins'];
           });
           GetStorage().write('email', credential!.email);
+          GlobalVars.email = credential!.email!;
+          if (keep) {
+            GetStorage().write('keep', true);
+          }
+          else{
+            GetStorage().write('keep', false);
+          }
           showInsterstitialAd();
           Navigator.push(
             context,
@@ -305,6 +342,8 @@ Future<void> login(user, pass, AdProvider provider) async {
       }
     }
 }
+
+
 
 
   void _showErrorDialog() {

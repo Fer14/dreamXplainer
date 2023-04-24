@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hello_world/ads/ad_mob_service.dart';
 import 'package:hello_world/screens/answer.dart';
 import 'package:hello_world/services/voice_handler.dart';
@@ -13,10 +14,12 @@ import 'dart:convert';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import '../provider/adProvider.dart';
 import '../provider/answer_provider.dart';
 import '../utils/appbar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../utils/global_vars.dart';
+import 'login.dart';
 
 class Chat2Page extends StatefulWidget {
   const Chat2Page({super.key});
@@ -47,6 +50,7 @@ class _Chat2PageState extends State<Chat2Page> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
   }
 
   final BannerAd mybanner = BannerAd(
@@ -81,8 +85,8 @@ class _Chat2PageState extends State<Chat2Page> {
       );
       _rewardedAd!.show(
         onUserEarnedReward: (ad, reward) => setState(() {
-          final adProvider = Provider.of<AdProvider>(context, listen: false);
-          adProvider.addReward();
+          final answerProvider = Provider.of<AnswerProvider>(context, listen: false);
+          answerProvider.addReward();
         })
       );
     }
@@ -103,163 +107,205 @@ class _Chat2PageState extends State<Chat2Page> {
     final size = MediaQuery.of(context).size;
     final bool showFab = MediaQuery.of(context).viewInsets.bottom==0.0;
     final answerProvider = Provider.of<AnswerProvider>(context);
-    final adProvider = Provider.of<AdProvider>(context);
 
 
 
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image.asset("assets/name_blue.png", width: size.width *0.5,),
-              GestureDetector(
-                onTap: (){
-                  showTutorial();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Image.asset("assets/icon.png", width: size.width *0.1,),
-                    SizedBox(width: 5,),
-                    AnimatedDigitWidget(
-                        autoSize: false,
-                          value: adProvider.rewardScore,
-                          textStyle: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ],
+    return new WillPopScope(
+        onWillPop: () async => false,
+      child: Scaffold(
+          appBar: AppBar(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.logout_rounded, color: Colors.white,),
+                  onPressed: (){
+                    _showLogoutDialod();
+                  },
                 ),
-              )
-            ],),
-          automaticallyImplyLeading: false,
-          backgroundColor: pale_colors.blue,
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-      child: Container(
-        height: size.height * 0.9,
-          decoration: BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              height: mybanner.size.height.toDouble(),
-              width: mybanner.size.width.toDouble(),
-              child: AdWidget(ad: mybanner),
-            ),
-            Container(
-              width: size.width * 0.8,
-              child: Center(
-                child: Text(
-                  "Describe your most recent dream and choose the way in which you want it to be interpreted and finished:",
-                  style: TextStyle(
-                    color: colors.brown,
-                    fontSize: 20,
+                Image.asset("assets/name_blue.png", width: size.width *0.5,),
+                GestureDetector(
+                  onTap: (){
+                    showTutorial();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset("assets/icon.png", width: size.width *0.1,),
+                      SizedBox(width: 5,),
+                      AnimatedDigitWidget(
+                          autoSize: false,
+                            value: answerProvider.rewardScore,
+                            textStyle: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
+                )
+              ],),
+            automaticallyImplyLeading: false,
+            backgroundColor: pale_colors.blue,
+            elevation: 0,
+          ),
+          body: SingleChildScrollView(
+        child: Container(
+          height: size.height * 0.9,
+            decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                height: mybanner.size.height.toDouble(),
+                width: mybanner.size.width.toDouble(),
+                child: AdWidget(ad: mybanner),
+              ),
+              Container(
+                width: size.width * 0.8,
+                child: Center(
+                  child: Text(
+                    "Describe your most recent dream and choose the way in which you want it to be interpreted and finished:",
+                    style: TextStyle(
+                      color: colors.brown,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              child: multiselection(size),
-            ),
-            Container(
-                child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                    height: size.height * 0.25,
-                    child: Center(child: Image.asset("assets/dreamer.png"))),
-                Container(
-                  width: size.width * 0.8,
-                  child: TextField(
-                    textCapitalization: TextCapitalization.sentences,
-                    controller: textEditingController,
-                    onChanged: (value) => setState(() => dream = value),
-                    cursorColor: pale_colors.blue,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: pale_colors.blue, width: 2),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: pale_colors.blue, width: 5),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
-                      ),
-                      border: OutlineInputBorder(
+              Container(
+                child: multiselection(size),
+              ),
+              Container(
+                  child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                      height: size.height * 0.25,
+                      child: Center(child: Image.asset("assets/dreamer.png"))),
+                  Container(
+                    width: size.width * 0.8,
+                    child: TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      controller: textEditingController,
+                      onChanged: (value) => setState(() => dream = value),
+                      cursorColor: pale_colors.blue,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: pale_colors.blue, width: 2),
                           borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      )),
+                            Radius.circular(20),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: pale_colors.blue, width: 5),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        )),
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 12,
                     ),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 12,
                   ),
-                ),
+                ],
+              )),
+
+              SizedBox(
+                height: 50,
+              )
+            ],
+          ),
+        ),
+      ),
+          ),
+        floatingActionButton:  showFab? FloatingActionButton(
+          onPressed: () {
+            sendVoice();
+          },
+          child: Icon(isListening ? Icons.mic_off : Icons.mic),
+          backgroundColor: pale_colors.dark_pink,
+        ) : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar( //bottom navigation bar on scaffold
+          color:colors.brown,
+          shape: CircularNotchedRectangle(), //shape of notch
+          notchMargin: 5, //notche margin between floating button and bottom appbar
+          child: Row( //children inside bottom appbar
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              IconButton(key: keyButton, icon: Icon(FontAwesomeIcons.rectangleAd, color: Colors.white,), onPressed: () {
+                showRewardedAd();
+
+              },),
+              IconButton(icon: Icon(Icons.send, color: Colors.white,), onPressed: () {
+                if(answerProvider.rewardScore > 0){
+                  answerProvider.callGPT(textEditingController.text);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AnswerPage()),
+                  );
+                }
+                else{
+                  _showMaterialDialog();
+                }
+
+              },),
+
+            ],
+          ),
+        ),
+          // This trailing comma makes auto-formatting nicer for build methods.
+          ),
+    );
+  }
+
+  void _showLogoutDialod() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Colors.white,
+            title: Text('CAUTION!', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset("assets/logout.png", width: 200,),
+                Text('Are you sure you want to log out?',style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
-            )),
-
-            SizedBox(
-              height: 50,
-            )
-          ],
-        ),
-      ),
-    ),
-        ),
-      floatingActionButton:  showFab? FloatingActionButton(
-        onPressed: () {
-          sendVoice();
-        },
-        child: Icon(isListening ? Icons.mic_off : Icons.mic),
-        backgroundColor: pale_colors.dark_pink,
-      ) : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar( //bottom navigation bar on scaffold
-        color:colors.brown,
-        shape: CircularNotchedRectangle(), //shape of notch
-        notchMargin: 5, //notche margin between floating button and bottom appbar
-        child: Row( //children inside bottom appbar
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            IconButton(key: keyButton, icon: Icon(FontAwesomeIcons.rectangleAd, color: Colors.white,), onPressed: () {
-              showRewardedAd();
-
-            },),
-            IconButton(icon: Icon(Icons.send, color: Colors.white,), onPressed: () {
-              if(adProvider.rewardScore > 0){
-
-                adProvider.subReward();
-
-                answerProvider.explanationGPT(textEditingController.text);
-                answerProvider.storyGPT(textEditingController.text);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AnswerPage()),
-                );
-              }
-              else{
-                _showMaterialDialog();
-              }
-
-            },),
-
-          ],
-        ),
-      ),
-        // This trailing comma makes auto-formatting nicer for build methods.
-        );
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+              ),
+              TextButton(
+                onPressed: () {
+                  GetStorage().write('keep', false);
+                  GetStorage().write('email', null);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PolicyPage()),
+                  );
+                },
+                child: Text('Accept', style: TextStyle(color: colors.brown, fontSize: 20, fontWeight: FontWeight.bold)),
+              )
+            ],
+          );
+        });
   }
 
   void _showMaterialDialog() {
@@ -505,7 +551,7 @@ class _Chat2PageState extends State<Chat2Page> {
       textSkip: "SKIP",
       textStyleSkip : TextStyle(color: colors.brown, fontWeight: FontWeight.bold),
       paddingFocus: 0,
-      opacityShadow: 0.9,
+      opacityShadow: 1,
       onFinish: () {
         print("finish");
       },

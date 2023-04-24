@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/adProvider.dart';
+import '../provider/answer_provider.dart';
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   const MainAppBar({
@@ -14,7 +14,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final adProvider = Provider.of<AdProvider>(context);
+    final answerProvider = Provider.of<AnswerProvider>(context);
 
 
     return AppBar(
@@ -30,7 +30,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
               SizedBox(width: 5,),
               AnimatedDigitWidget(
                 autoSize: false,
-                value: adProvider.rewardScore,
+                value: answerProvider.rewardScore,
                 textStyle: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ],

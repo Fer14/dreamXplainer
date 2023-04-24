@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../ads/ad_mob_service.dart';
-import '../provider/adProvider.dart';
 import '../utils/appbar.dart';
 
 class AnswerPage extends StatefulWidget {
@@ -39,7 +38,7 @@ class _AnswerPageState extends State<AnswerPage>
   final _selectedColor = pale_colors.blue;
   final _tabs = const [
     Tab(text: 'Explanation'),
-    Tab(text: 'End of dream'),
+    Tab(text: 'Dream ending'),
   ];
   final BannerAd mybanner = BannerAd(
       size: AdSize.fullBanner,
@@ -123,25 +122,21 @@ class _AnswerPageState extends State<AnswerPage>
                   child: TabBarView(controller: _tabController, children: [
                     Column(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'Explanation',
-                          style: TextStyle(
-                            color: pale_colors.blue,
-                            fontSize: 25,
-                          ),
-                        ),
                         Container(
-                          height: size.height * 0.15,
-                          child: Image.asset(
+                          height: size.height * 0.125,
+                          child: answerProvider.explanationError ?
+                          Image.asset(
+                            'assets/server_down.png',
+                          ): Image.asset(
                             'assets/explanation.png',
                           ),
                         ),
                         (answerProvider.explanationAnswer != null)
                             ? Container(
-                                height: size.height * 0.2,
+                                height: size.height * 0.275,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -158,7 +153,25 @@ class _AnswerPageState extends State<AnswerPage>
                                   ],
                                 ),
                               )
-                            : Padding(
+                            : answerProvider.explanationError ?
+                        Container(
+                          height: size.height * 0.275,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Text(
+                                      'There has been an error with the connection. Please try again in the following minutes...',
+                                      style: TextStyle(
+                                        color: colors.brown,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        ): Padding(
                                 padding: const EdgeInsets.only(top: 50.0),
                                 child: LoadingAnimationWidget.stretchedDots(
                                   color: pale_colors.blue,
@@ -172,15 +185,8 @@ class _AnswerPageState extends State<AnswerPage>
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "If you hadn't woken up...",
-                          style: TextStyle(
-                            color: pale_colors.blue,
-                            fontSize: 25,
-                          ),
-                        ),
                         Container(
-                          height: size.height * 0.15,
+                          height: size.height * 0.125,
                           child: answerProvider.storyError ?
                           Image.asset(
                             'assets/server_down.png',
@@ -190,7 +196,7 @@ class _AnswerPageState extends State<AnswerPage>
                         ),
                         (answerProvider.storyAnswer != null)
                             ? Container(
-                                height: size.height * 0.2,
+                                height: size.height * 0.275,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -209,14 +215,14 @@ class _AnswerPageState extends State<AnswerPage>
                               )
                             : answerProvider.storyError ?
                             Container(
-                              height: size.height * 0.2,
+                              height: size.height * 0.275,
                               child: Column(
                                 children: [
                                   Expanded(
                                       child: SingleChildScrollView(
                                     scrollDirection: Axis.vertical,
                                     child: Text(
-                                      'There has been an error on server side. Please try again in the following minutes...',
+                                      'There has been an error with the connection. Please try again in the following minutes...',
                                       style: TextStyle(
                                         color: colors.brown,
                                         fontSize: 20,

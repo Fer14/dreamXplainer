@@ -26,7 +26,7 @@ class pale_colors {
   static const green = Color(0xffb5e7a0);
   static const red = Color(0xffff8c94);
   static const orange = Color(0xffFFCFA2);
-
+  static const white = Color(0xffedf2ff);
 }
 
 class colors {

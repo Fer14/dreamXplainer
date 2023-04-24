@@ -1,15 +1,19 @@
+
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:hello_world/provider/adProvider.dart';
 import 'package:hello_world/provider/answer_provider.dart';
+import 'package:hello_world/screens/chat2.dart';
+import 'package:hello_world/screens/error.dart';
 import 'package:hello_world/screens/login.dart';
 import 'package:flutter/services.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hello_world/utils/global_vars.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
-
 
 
 Future<void> main() async {
@@ -20,6 +24,26 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
+
+
+  bool result = await InternetConnectionChecker().hasConnection;
+  if(result == true) {
+    if (GetStorage().read('email') != null &&
+        GetStorage().read('keep') != false &&
+        GetStorage().read('keep') != null) {
+      GlobalVars.session = true;
+      GlobalVars.email = GetStorage().read('email');
+      final doc = FirebaseFirestore.instance.collection('user-coins').doc(GetStorage().read('email'));
+      doc.get().then((value) {
+        GlobalVars.score_state = value['coins'];
+      });
+    } else {
+      GlobalVars.session = false;
+    }
+  } else {
+    GlobalVars.session_error = true;
+  }
+
 
   runApp(MyApp());
 }
@@ -35,8 +59,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AnswerProvider()),
-          ChangeNotifierProvider(create: (_) => AdProvider()),
-
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -63,7 +85,7 @@ class MyApp extends StatelessWidget {
                 duration: 1500,
                 splash: Image.asset('assets/icon.png',),
                 splashIconSize: 224,
-                nextScreen: PolicyPage() ,
+                nextScreen: GlobalVars.session_error ? ErrorPage() : GlobalVars.session ? Chat2Page() : PolicyPage(),
                 splashTransition: SplashTransition.scaleTransition,
                 backgroundColor: pale_colors.blue))//const MyHomePage(title: 'Flutter Demo Home Page'),
             );
