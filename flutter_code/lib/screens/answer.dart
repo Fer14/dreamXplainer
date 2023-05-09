@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
@@ -14,6 +15,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../ads/ad_mob_service.dart';
 import '../utils/appbar.dart';
+import 'chat2.dart';
 
 class AnswerPage extends StatefulWidget {
   const AnswerPage({super.key});
@@ -75,210 +77,304 @@ class _AnswerPageState extends State<AnswerPage>
 
 
 
-    return Scaffold(
-        appBar:  MainAppBar(),
-        body: SingleChildScrollView(
-            child: Container(
-      height: size.height * 1,
-      color: pale_colors.pink,
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: kToolbarHeight + 8.0,
-            padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
-            decoration: BoxDecoration(
-              color: _selectedColor,
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(100),
-                      topRight: Radius.circular(100)),
-                  color: Colors.white),
-              labelColor: colors.brown,
-              unselectedLabelColor: Colors.white,
-              tabs: _tabs,
-            ),
-          ),
-          Container(
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(100),
-                  bottomRight: Radius.circular(100),
-                  topLeft: Radius.circular(0),
-                  topRight: Radius.circular(0),
+    return new WillPopScope(
+      onWillPop: () async {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                backgroundColor: Colors.white,
+                title: Text('WAIT!', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset("assets/new.png", width: 200,),
+                    Text("Are you sure you want to go back? You will lose this dream's explanation and ending. Make sure you have copies and shared with your friends.",textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
+                  ],
                 ),
-              ),
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
-                child: Container(
-                  width: double.infinity,
-                  height: size.height * 0.55,
-                  decoration: BoxDecoration(),
-                  child: TabBarView(controller: _tabController, children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: size.height * 0.125,
-                          child: answerProvider.explanationError ?
-                          Image.asset(
-                            'assets/server_down.png',
-                          ): Image.asset(
-                            'assets/explanation.png',
-                          ),
-                        ),
-                        (answerProvider.explanationAnswer != null)
-                            ? Container(
-                                height: size.height * 0.275,
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                        child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Text(
-                                        answerProvider.explanationAnswer!,
-                                        style: TextStyle(
-                                          color: colors.brown,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ))
-                                  ],
-                                ),
-                              )
-                            : answerProvider.explanationError ?
-                        Container(
-                          height: size.height * 0.275,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Text(
-                                      'There has been an error with the connection. Please try again in the following minutes...',
-                                      style: TextStyle(
-                                        color: colors.brown,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ))
-                            ],
-                          ),
-                        ): Padding(
-                                padding: const EdgeInsets.only(top: 50.0),
-                                child: LoadingAnimationWidget.stretchedDots(
-                                  color: pale_colors.blue,
-                                  size: 200,
-                                ),
-                              ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: size.height * 0.125,
-                          child: answerProvider.storyError ?
-                          Image.asset(
-                            'assets/server_down.png',
-                          ): Image.asset(
-                            'assets/dream2.png',
-                          ),
-                        ),
-                        (answerProvider.storyAnswer != null)
-                            ? Container(
-                                height: size.height * 0.275,
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                        child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Text(
-                                        answerProvider.storyAnswer!,
-                                        style: TextStyle(
-                                          color: colors.brown,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ))
-                                  ],
-                                ),
-                              )
-                            : answerProvider.storyError ?
-                            Container(
-                              height: size.height * 0.275,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                      child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Text(
-                                      'There has been an error with the connection. Please try again in the following minutes...',
-                                      style: TextStyle(
-                                        color: colors.brown,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ))
-                                ],
-                              ),
-                            ):
-                            Padding(
-                                padding: const EdgeInsets.only(top: 50.0),
-                                child: LoadingAnimationWidget.stretchedDots(
-                                  color: pale_colors.blue,
-                                  size: 200,
-                                ),
-                              ),
-                      ],
-                    )
-                  ]),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            height: size.height * 0.15,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Cancel', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Chat2Page()),
+
+                      );
+                    },
+                    child: Text('Accept', style: TextStyle(color:colors.brown, fontSize: 20, fontWeight: FontWeight.bold)),
+                  )
+                ],
+              );
+            });
+        return false;
+      },
+      child: Scaffold(
+          appBar:  AppBar(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                (_selectedIndex == 0) ?
-                (answerProvider.explanationAnswer != null)
-                    ?   copyButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
-                (answerProvider.storyAnswer != null) ? copyButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
-                (_selectedIndex == 0) ?
-                (answerProvider.explanationAnswer != null)
-                    ?   calendarButton( size,  answerProvider.explanationAnswer) : Container() :
-                (answerProvider.storyAnswer != null) ? calendarButton( size,   answerProvider.storyAnswer) : Container() ,
-                (_selectedIndex == 0) ?
-                (answerProvider.explanationAnswer != null)
-                    ?   shareButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
-                (answerProvider.storyAnswer != null) ? shareButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
-              ],
-            ),
+                IconButton(icon: Icon(FontAwesomeIcons.cloud, color: Colors.white,), onPressed: () {
+                  showDreamDialog(answerProvider);
+                }
+                  ,),
+                Padding(padding: EdgeInsets.only(bottom: 10),
+                  child:Image.asset("assets/name_blue.png", width: size.width *0.5,),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset("assets/icon.png", width: size.width *0.1,),
+                    SizedBox(width: 5,),
+                    AnimatedDigitWidget(
+                      autoSize: false,
+                      value: answerProvider.rewardScore,
+                      textStyle: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ],
+                )
+              ],),
+            automaticallyImplyLeading: false,
+            backgroundColor: pale_colors.blue,
+            elevation: 0,
           ),
-          Center(
-            child: Container(
-              height: mybanner.size.height.toDouble(),
-              width: mybanner.size.width.toDouble(),
-              child: AdWidget(ad: mybanner),
+          body: SingleChildScrollView(
+              child: Container(
+        height: size.height * 1,
+        color: pale_colors.pink,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: kToolbarHeight + 8.0,
+              padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
+              decoration: BoxDecoration(
+                color: _selectedColor,
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicator: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(100),
+                        topRight: Radius.circular(100)),
+                    color: Colors.white),
+                labelColor: colors.brown,
+                unselectedLabelColor: Colors.white,
+                tabs: _tabs,
+              ),
             ),
-          )
-        ],
-      ),
-    ))
-        // This trailing comma makes auto-formatting nicer for build methods.
-        );
+            Container(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(100),
+                    bottomRight: Radius.circular(100),
+                    topLeft: Radius.circular(0),
+                    topRight: Radius.circular(0),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
+                  child: Container(
+                    width: double.infinity,
+                    height: size.height * 0.55,
+                    decoration: BoxDecoration(),
+                    child: TabBarView(controller: _tabController, children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: size.height * 0.125,
+                            child: answerProvider.explanationError ?
+                            Image.asset(
+                              'assets/server_down.png',
+                            ): Image.asset(
+                              'assets/explanation.png',
+                            ),
+                          ),
+                          (answerProvider.explanationAnswer != null)
+                              ? Container(
+                                  height: size.height * 0.275,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                          child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Text(
+                                          answerProvider.explanationAnswer!,
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: colors.brown,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ))
+                                    ],
+                                  ),
+                                )
+                              : answerProvider.explanationError ?
+                          Container(
+                            height: size.height * 0.275,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Text(
+                                        'There has been an error with the connection. Please try again in the following minutes...',
+                                        style: TextStyle(
+                                          color: colors.brown,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          ): Padding(
+                                  padding: const EdgeInsets.only(top: 50.0),
+                                  child: LoadingAnimationWidget.stretchedDots(
+                                    color: pale_colors.blue,
+                                    size: 200,
+                                  ),
+                                ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: size.height * 0.125,
+                            child: answerProvider.storyError ?
+                            Image.asset(
+                              'assets/server_down.png',
+                            ): Image.asset(
+                              'assets/dream2.png',
+                            ),
+                          ),
+                          (answerProvider.storyAnswer != null)
+                              ? Container(
+                                  height: size.height * 0.275,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                          child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Text(
+                                          answerProvider.storyAnswer!,
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: colors.brown,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ))
+                                    ],
+                                  ),
+                                )
+                              : answerProvider.storyError ?
+                              Container(
+                                height: size.height * 0.275,
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                        child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Text(
+                                        'There has been an error with the connection. Please try again in the following minutes...',
+                                        style: TextStyle(
+                                          color: colors.brown,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                              ):
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 50.0),
+                                  child: LoadingAnimationWidget.stretchedDots(
+                                    color: pale_colors.blue,
+                                    size: 200,
+                                  ),
+                                ),
+                        ],
+                      )
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              height: size.height * 0.15,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  (_selectedIndex == 0) ?
+                  (answerProvider.explanationAnswer != null)
+                      ?   copyButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
+                  (answerProvider.storyAnswer != null) ? copyButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
+                  (_selectedIndex == 0) ?
+                  (answerProvider.explanationAnswer != null)
+                      ?   calendarButton( size,  answerProvider.explanationAnswer) : Container() :
+                  (answerProvider.storyAnswer != null) ? calendarButton( size,   answerProvider.storyAnswer) : Container() ,
+                  (_selectedIndex == 0) ?
+                  (answerProvider.explanationAnswer != null)
+                      ?   shareButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
+                  (answerProvider.storyAnswer != null) ? shareButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
+                ],
+              ),
+            ),
+            Center(
+              child: Container(
+                height: mybanner.size.height.toDouble(),
+                width: mybanner.size.width.toDouble(),
+                child: AdWidget(ad: mybanner),
+              ),
+            )
+          ],
+        ),
+      )),
+
+          ),
+    );
   }
+
+  void showDreamDialog(answerProvider){
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Colors.white,
+            title: Text('YOUR DREAM WAS:', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            content: SingleChildScrollView(
+              child: Text(answerProvider.dreamanswer,textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Accept', style: TextStyle(color:pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+              )
+            ],
+          );
+        });
+  }
+
+
 
   Widget calendarButton(Size size, dream) {
     return ElevatedButton(

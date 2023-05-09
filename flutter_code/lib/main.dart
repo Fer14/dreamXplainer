@@ -60,34 +60,42 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AnswerProvider()),
         ],
-        child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'dreamXplainer',
-            theme: ThemeData(
-              // This is the theme of your application.
-              //
-              // Try running your application with "flutter run". You'll see the
-              // application has a blue toolbar. Then, without quitting the app, try
-              // changing the primarySwatch below to Colors.green and then invoke
-              // "hot reload" (press "r" in the console where you ran "flutter run",
-              // or simply save your changes to "hot reload" in a Flutter IDE).
-              // Notice that the counter didn't reset back to zero; the application
-              // is not restarted.
-              scrollbarTheme: ScrollbarThemeData(
-                thumbColor: MaterialStateProperty.all(pale_colors.blue),
-                trackColor: MaterialStateProperty.all(pale_colors.blue),
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if(!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+              currentFocus.focusedChild!.unfocus();
+            }
+          },
+          child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'dreamXplainer',
+              theme: ThemeData(
+                // This is the theme of your application.
+                //
+                // Try running your application with "flutter run". You'll see the
+                // application has a blue toolbar. Then, without quitting the app, try
+                // changing the primarySwatch below to Colors.green and then invoke
+                // "hot reload" (press "r" in the console where you ran "flutter run",
+                // or simply save your changes to "hot reload" in a Flutter IDE).
+                // Notice that the counter didn't reset back to zero; the application
+                // is not restarted.
+                scrollbarTheme: ScrollbarThemeData(
+                  thumbColor: MaterialStateProperty.all(pale_colors.blue),
+                  trackColor: MaterialStateProperty.all(pale_colors.blue),
+                ),
+                //set pale_colors.blue as primarySwatch color
+                primaryColor: pale_colors.blue,
+                fontFamily: 'Nunito'
               ),
-              //set pale_colors.blue as primarySwatch color
-              primaryColor: pale_colors.blue,
-              fontFamily: 'Nunito'
-            ),
-            home: AnimatedSplashScreen(
-                duration: 1500,
-                splash: Image.asset('assets/icon.png',),
-                splashIconSize: 224,
-                nextScreen: GlobalVars.session_error ? ErrorPage() : GlobalVars.session ? Chat2Page() : PolicyPage(),
-                splashTransition: SplashTransition.scaleTransition,
-                backgroundColor: pale_colors.blue))//const MyHomePage(title: 'Flutter Demo Home Page'),
+              home: AnimatedSplashScreen(
+                  duration: 1500,
+                  splash: Image.asset('assets/icon.png',),
+                  splashIconSize: 224,
+                  nextScreen: GlobalVars.session_error ? ErrorPage() : GlobalVars.session ? Chat2Page() : PolicyPage(),
+                  splashTransition: SplashTransition.scaleTransition,
+                  backgroundColor: pale_colors.blue)),
+        )//const MyHomePage(title: 'Flutter Demo Home Page'),
             );
   }
 }

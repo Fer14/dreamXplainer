@@ -296,7 +296,7 @@ Widget _userTextField(Size size) {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset("assets/email.png", width: 200,),
-                Text('Check you inbox to validate your email.',style: TextStyle(color: colors.brown, fontSize: 20)),
+                Text('Check you inbox to validate your email. (It may appear in the spam folder)',style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
             actions: <Widget>[

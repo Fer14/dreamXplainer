@@ -21,6 +21,10 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          IconButton(icon: Icon(FontAwesomeIcons.cloud, color: Colors.white,), onPressed: () {
+            //showDreamDialog(answerProvider);
+          }
+            ,),
           Padding(padding: EdgeInsets.only(bottom: 10),
             child:Image.asset("assets/name_blue.png", width: size.width *0.5,),),
           Row(

@@ -32,7 +32,7 @@ class _Chat2PageState extends State<Chat2Page> {
   TextEditingController textEditingController = TextEditingController();
   final VoiceHandler voiceHandler = VoiceHandler();
   bool isListening = false;
-  late String dream;
+  late String dream = "";
   InterstitialAd? _interstitialAd;
   RewardedAd? _rewardedAd;
   late TutorialCoachMark tutorialCoachMark;
@@ -40,7 +40,6 @@ class _Chat2PageState extends State<Chat2Page> {
   String tag_selected = "";
 
   void initState() {
-
     mybanner.load();
     _createRewardedAd();
     createTutorial();
@@ -51,7 +50,6 @@ class _Chat2PageState extends State<Chat2Page> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-
   }
 
   final BannerAd mybanner = BannerAd(
@@ -60,44 +58,39 @@ class _Chat2PageState extends State<Chat2Page> {
       listener: AdMobService.bannerListener,
       request: const AdRequest());
 
-
-  void _createRewardedAd(){
-    RewardedAd.load(adUnitId: AdMobService.reardedAdUnitId!, request: const AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) => setState(() {
-          _rewardedAd = ad;
-        }), onAdFailedToLoad: (error) => setState(() {
-          _rewardedAd = null;
-        })));
+  void _createRewardedAd() {
+    RewardedAd.load(
+        adUnitId: AdMobService.reardedAdUnitId!,
+        request: const AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+            onAdLoaded: (ad) => setState(() {
+                  _rewardedAd = ad;
+                }),
+            onAdFailedToLoad: (error) => setState(() {
+                  _rewardedAd = null;
+                })));
   }
 
-
-  void showRewardedAd(){
-
-    if (_rewardedAd != null){
-      _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad){
-          ad.dispose();
-          _createRewardedAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad,error){
-          ad.dispose();
-          _createRewardedAd();
-        }
-      );
+  void showRewardedAd() {
+    if (_rewardedAd != null) {
+      _rewardedAd!.fullScreenContentCallback =
+          FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _createRewardedAd();
+      }, onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        _createRewardedAd();
+      });
       _rewardedAd!.show(
-        onUserEarnedReward: (ad, reward) => setState(() {
-          final answerProvider = Provider.of<AnswerProvider>(context, listen: false);
-          answerProvider.addReward();
-        })
-      );
-    }
-    else{
+          onUserEarnedReward: (ad, reward) => setState(() {
+                final answerProvider =
+                    Provider.of<AnswerProvider>(context, listen: false);
+                answerProvider.addReward();
+              }));
+    } else {
       showAddErrorDialog();
     }
   }
-
-
-
 
   void showTutorial() {
     tutorialCoachMark.show(context: context);
@@ -106,179 +99,225 @@ class _Chat2PageState extends State<Chat2Page> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final bool showFab = MediaQuery.of(context).viewInsets.bottom==0.0;
+    final bool showFab = MediaQuery.of(context).viewInsets.bottom == 0.0;
     final answerProvider = Provider.of<AnswerProvider>(context);
 
-
-
-
-    return new WillPopScope(
-        onWillPop: () async => false,
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.logout_rounded, color: Colors.white,),
-                  onPressed: (){
-                    _showLogoutDialod();
-                  },
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.logout_rounded,
+                  color: Colors.white,
                 ),
-                Image.asset("assets/name_blue.png", width: size.width *0.5,),
-                GestureDetector(
-                  onTap: (){
-                    showTutorial();
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset("assets/icon.png", width: size.width *0.1,),
-                      SizedBox(width: 5,),
-                      AnimatedDigitWidget(
-                          autoSize: false,
-                            value: answerProvider.rewardScore,
-                            textStyle: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ],
-                  ),
-                )
-              ],),
-            automaticallyImplyLeading: false,
-            backgroundColor: pale_colors.blue,
-            elevation: 0,
-          ),
-          body: SingleChildScrollView(
-        child: Container(
-          height: size.height * 0.9,
-            decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                height: mybanner.size.height.toDouble(),
-                width: mybanner.size.width.toDouble(),
-                child: AdWidget(ad: mybanner),
+                onPressed: () {
+                  _showLogoutDialod();
+                },
               ),
-              Container(
-                width: size.width * 0.8,
-                child: Center(
-                  child: Text(
-                    "Describe your most recent dream and choose the way in which you want it to be interpreted and finished:",
-                    style: TextStyle(
-                      color: colors.brown,
-                      fontSize: 20,
+              Image.asset(
+                "assets/name_blue.png",
+                width: size.width * 0.5,
+              ),
+              GestureDetector(
+                onTap: () {
+                  showTutorial();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset(
+                      "assets/icon.png",
+                      width: size.width * 0.1,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    AnimatedDigitWidget(
+                      autoSize: false,
+                      value: answerProvider.rewardScore,
+                      textStyle: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ],
                 ),
-              ),
-              Container(
-                child: multiselection(size),
-              ),
-              Container(
-                  child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                      height: size.height * 0.25,
-                      child: Center(child: Image.asset("assets/dreamer.png"))),
-                  Container(
-                    width: size.width * 0.8,
-                    child: TextField(
-                      textCapitalization: TextCapitalization.sentences,
-                      controller: textEditingController,
-                      onChanged: (value) => setState(() => dream = value),
-                      cursorColor: pale_colors.blue,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: pale_colors.blue, width: 2),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: pale_colors.blue, width: 5),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        )),
-                      ),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 12,
-                    ),
-                  ),
-                ],
-              )),
-
-              SizedBox(
-                height: 50,
               )
             ],
           ),
+          automaticallyImplyLeading: false,
+          backgroundColor: pale_colors.blue,
+          elevation: 0,
         ),
-      ),
-          ),
-        floatingActionButton:  showFab? FloatingActionButton(
-          onPressed: () {
-            sendVoice();
-          },
-          child: Icon(isListening ? Icons.mic_off : Icons.mic),
-          backgroundColor: pale_colors.dark_pink,
-        ) : null,
+        body: Stack(
+
+          children: [
+            SingleChildScrollView(
+              child: Container(
+                height: size.height * 0.9,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: mybanner.size.height.toDouble(),
+                        width: mybanner.size.width.toDouble(),
+                        child: AdWidget(ad: mybanner),
+                      ),
+                      Container(
+                        width: size.width * 0.8,
+                        child: Center(
+                          child: Text(
+                            "Describe your most recent dream and choose the way in which you want it to be interpreted and finished:",
+                            style: TextStyle(
+                              color: colors.brown,
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: multiselection(size),
+                      ),
+                      Container(
+                          child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                              height: size.height * 0.25,
+                              child: Center(
+                                  child: Image.asset("assets/dreamer.png"))),
+                          Container(
+                            margin: EdgeInsets.only(bottom: size.height * 0.05),
+                            width: size.width * 0.8,
+                            child: TextField(
+                              textCapitalization: TextCapitalization.sentences,
+                              controller: textEditingController,
+                              onChanged: (value) =>
+                                  setState(() => dream = value),
+                              cursorColor: pale_colors.blue,
+                              decoration: InputDecoration(
+                                hintText: "Write your dream here...",
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: pale_colors.blue, width: 2),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: pale_colors.blue, width: 5),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                )),
+                              ),
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 12,
+                            ),
+                          ),
+                        ],
+                      )),
+                      SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            !showFab ? Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: size.height * 0.05,
+                color: pale_colors.blue,
+                  child:  bottomButtons(answerProvider)),
+            ) : Container(),
+          ],
+        ),
+        floatingActionButton: showFab
+            ? FloatingActionButton(
+                onPressed: () {
+                  sendVoice();
+                },
+                child: Icon(isListening ? Icons.mic_off : Icons.mic),
+                backgroundColor: pale_colors.dark_pink,
+              )
+            : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar( //bottom navigation bar on scaffold
-          color:colors.brown,
+        bottomNavigationBar: showFab ?  BottomAppBar(
+          // do not hide bottom appbar when keyboard is shown
+          color: pale_colors.blue,
           shape: CircularNotchedRectangle(), //shape of notch
-          notchMargin: 5, //notche margin between floating button and bottom appbar
-          child: Row( //children inside bottom appbar
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(key: keyButton, icon: Icon(FontAwesomeIcons.rectangleAd, color: Colors.white,), onPressed: () {
-                showRewardedAd();
-
-              },),
-              IconButton(icon: Icon(Icons.send, color: Colors.white,), onPressed: () {
-                if(answerProvider.rewardScore > 0){
-                  if(textEditingController.text != "") {
-                    if(tag_selected != ""){
-                      answerProvider.callGPT(textEditingController.text, tag_selected!);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AnswerPage()),
-                      );
-                    }
-                    else{
-                      _showMaterialDialog("assets/select.png","You must select a tag");
-                    }
-                  }
-                  else{
-                    _showMaterialDialog("assets/empty.png","Your dream is empty, please write something.");
-                  }
-                }
-                else{
-                  _showMaterialDialog("assets/warning.png",'You dont have any dream points left, you can get them by watching ads.');
-                }
-
-              },),
-
-            ],
-          ),
-        ),
-          // This trailing comma makes auto-formatting nicer for build methods.
-          ),
+          notchMargin:
+              5, //notche margin between floating button and bottom appbar
+          child: bottomButtons(answerProvider),
+        ) : null,
+        // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
+
+  Widget bottomButtons(answerProvider){
+    return Row(
+      //children inside bottom appbar
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        IconButton(
+          key: keyButton,
+          icon: Icon(
+            FontAwesomeIcons.rectangleAd,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showRewardedAd();
+          },
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.send,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            if (answerProvider.rewardScore > 0) {
+              if (textEditingController.text != "") {
+                if (tag_selected != "") {
+                  answerProvider.callGPT(
+                      textEditingController.text, tag_selected!);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => AnswerPage()),
+                  );
+                } else {
+                  _showMaterialDialog(
+                      "assets/tag2.png", "You must select a tag");
+                }
+              } else {
+                _showMaterialDialog("assets/empty.png",
+                    "Your dream is empty, please write something.");
+              }
+            } else {
+              _showMaterialDialog("assets/warning.png",
+                  'You dont have any dream points left, you can get them by watching ads.');
+            }
+          },
+        ),
+      ],
+    );
+
+  }
+
 
   void _showLogoutDialod() {
     showDialog(
@@ -288,12 +327,20 @@ class _Chat2PageState extends State<Chat2Page> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('CAUTION!', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            title: Text('CAUTION!',
+                style: TextStyle(
+                    color: colors.brown,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset("assets/logout.png", width: 200,),
-                Text('Are you sure you want to log out?',style: TextStyle(color: colors.brown, fontSize: 20)),
+                Image.asset(
+                  "assets/logout.png",
+                  width: 200,
+                ),
+                Text('Are you sure you want to log out?',
+                    style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
             actions: <Widget>[
@@ -301,7 +348,11 @@ class _Chat2PageState extends State<Chat2Page> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text('Cancel',
+                    style: TextStyle(
+                        color: pale_colors.blue,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
               ),
               TextButton(
                 onPressed: () {
@@ -312,7 +363,11 @@ class _Chat2PageState extends State<Chat2Page> {
                     MaterialPageRoute(builder: (context) => PolicyPage()),
                   );
                 },
-                child: Text('Accept', style: TextStyle(color: colors.brown, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text('Accept',
+                    style: TextStyle(
+                        color: colors.brown,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
               )
             ],
           );
@@ -327,12 +382,19 @@ class _Chat2PageState extends State<Chat2Page> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('WARNING', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            title: Text('WARNING',
+                style: TextStyle(
+                    color: colors.brown,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(image, width: 200,),
-                Text(text,style: TextStyle(color: colors.brown, fontSize: 20)),
+                Image.asset(
+                  image,
+                  width: 200,
+                ),
+                Text(text, style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
             actions: <Widget>[
@@ -340,7 +402,11 @@ class _Chat2PageState extends State<Chat2Page> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text('Accept',
+                    style: TextStyle(
+                        color: pale_colors.blue,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
               )
             ],
           );
@@ -373,135 +439,135 @@ class _Chat2PageState extends State<Chat2Page> {
       width: size.width * 0.9,
       child: Center(
         child: MultiSelectContainer(
-            onChange: (allSelectedItems, selectedItem) {
-              setState(() {
+          onChange: (allSelectedItems, selectedItem) {
+            setState(() {
+              if (selectedItem != tag_selected){
                 tag_selected = selectedItem;
-              });
-            },
-            maxSelectableCount: 1,
-            prefix: MultiSelectPrefix(
-              selectedPrefix: const Padding(
-                padding: EdgeInsets.only(right: 5),
-                child: Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 14,
-                ),
+              }
+              else{
+                tag_selected = "";
+              }
+            });
+            print(tag_selected);
+          },
+          maxSelectableCount: 1,
+          prefix: MultiSelectPrefix(
+            selectedPrefix: const Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 14,
               ),
             ),
-            items: [
-              MultiSelectCard(
-                value: 'Funny',
-                label: 'Funny',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.violet.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.violet,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
+          ),
+          items: [
+            MultiSelectCard(
+              value: 'Funny',
+              label: 'Funny',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.violet.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.violet,
+                    borderRadius: BorderRadius.circular(20)),
               ),
-              MultiSelectCard(
-                value: 'Horror',
-                label: 'Horror',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.pink.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.pink,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Action',
-                label: 'Action',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.blue.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Serious',
-                label: 'Serious',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.green.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.green,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Romantic',
-                label: 'Romantic',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.dark_pink.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.dark_pink,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              MultiSelectCard(
-                value: 'Tarantino',
-                label: 'Tarantino',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.red.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.red,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-
-              MultiSelectCard(
-                value: 'Sad',
-                label: 'Sad',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.orange.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.orange,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-
-              MultiSelectCard(
-                value: 'Fantasy',
-                label: 'Fantasy',
-                decorations: MultiSelectItemDecorations(
-                  decoration: BoxDecoration(
-                      color: pale_colors.light_blue.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20)),
-                  selectedDecoration: BoxDecoration(
-                      color: pale_colors.light_blue,
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-            ],
-
-            onMaximumSelected: (allSelectedItems, selectedItem) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: magic_colors.dark_pink,
-                  content: Text('You can only select 1 options at a time')));
-            },
             ),
+            MultiSelectCard(
+              value: 'Horror',
+              label: 'Horror',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.pink.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.pink,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              value: 'Action',
+              label: 'Action',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.blue.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.blue,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              value: 'Serious',
+              label: 'Serious',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.green.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.green,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              value: 'Romantic',
+              label: 'Romantic',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.dark_pink.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.dark_pink,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              value: 'Tarantino',
+              label: 'Tarantino',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.red.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.red,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              value: 'Sad',
+              label: 'Sad',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.orange.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.orange,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              value: 'Fantasy',
+              label: 'Fantasy',
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.light_blue.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.light_blue,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+          ],
+          onMaximumSelected: (allSelectedItems, selectedItem) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: magic_colors.dark_pink,
+                content: Text('You can only select 1 options at a time')));
+          },
+        ),
       ),
     );
   }
-
-
-
 
   void createTutorial() {
     tutorialCoachMark = TutorialCoachMark(
@@ -509,9 +575,10 @@ class _Chat2PageState extends State<Chat2Page> {
       targets: _createTargets(),
       colorShadow: pale_colors.blue,
       textSkip: "SKIP",
-      textStyleSkip : TextStyle(color: colors.brown, fontWeight: FontWeight.bold),
+      textStyleSkip:
+          TextStyle(color: colors.brown, fontWeight: FontWeight.bold),
       paddingFocus: 0,
-      opacityShadow: 1,
+      opacityShadow: 0.9,
       onFinish: () {
         print("finish");
       },
@@ -530,19 +597,18 @@ class _Chat2PageState extends State<Chat2Page> {
         print("skip");
       },
     );
-
-
   }
 
   List<TargetFocus> _createTargets() {
     List<TargetFocus> targets = [];
     targets.add(
       TargetFocus(
-        enableOverlayTab : true,
+        enableOverlayTab: true,
         identify: "keyBottomNavigation1",
         keyTarget: keyButton,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
+        radius: 100,
         contents: [
           TargetContent(
             align: ContentAlign.top,
@@ -554,18 +620,27 @@ class _Chat2PageState extends State<Chat2Page> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Center(child: Text(
+                    Center(
+                        child: Text(
                       "Watch ADs to get rewards that can be used for more dreams.",
                       style: TextStyle(
                         color: colors.brown,
                         fontSize: 25,
                       ),
-                        textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                     )),
                     Container(
-                      child:IconButton(icon: Icon(FontAwesomeIcons.rectangleAd, color: colors.brown, size: 40,), onPressed: () {  },),
+                      child: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.rectangleAd,
+                          color: colors.brown,
+                          size: 40,
+                        ),
+                        onPressed: () {},
+                      ),
                     ),
-                    Center(child: Text(
+                    Center(
+                        child: Text(
                       "Each time you watch an AD, you will get 1 dream.",
                       style: TextStyle(
                         color: colors.brown,
@@ -574,7 +649,10 @@ class _Chat2PageState extends State<Chat2Page> {
                       textAlign: TextAlign.center,
                     )),
                     Container(
-                      child: Image.asset("assets/icon.png", width: 100,),
+                      child: Image.asset(
+                        "assets/icon.png",
+                        width: 100,
+                      ),
                     )
                   ],
                 ),
@@ -588,7 +666,7 @@ class _Chat2PageState extends State<Chat2Page> {
     return targets;
   }
 
-  void showAddErrorDialog(){
+  void showAddErrorDialog() {
     showDialog(
         context: context,
         builder: (context) {
@@ -596,12 +674,21 @@ class _Chat2PageState extends State<Chat2Page> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('ERROR', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            title: Text('ERROR',
+                style: TextStyle(
+                    color: colors.brown,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset("assets/error.png", width: 200,),
-                Text('Ad could not load, please try again in the following minutes.',style: TextStyle(color: colors.brown, fontSize: 20)),
+                Image.asset(
+                  "assets/error.png",
+                  width: 200,
+                ),
+                Text(
+                    'Ad could not load, please try again in the following minutes.',
+                    style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
             actions: <Widget>[
@@ -609,12 +696,14 @@ class _Chat2PageState extends State<Chat2Page> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text('Accept',
+                    style: TextStyle(
+                        color: pale_colors.blue,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
               )
             ],
           );
         });
   }
-
-
-  }
+}
