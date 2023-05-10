@@ -40,5 +40,8 @@
   "connection_error" : "Ha habido un error con la conexión. Por favor, inténtalo de nuevo en unos minutos.",
   "re_read_dream": "TU SUEÑO FUE:",
   "coming_soon": "PRONTO DISPONIBLE",
-  "feature_soon" : "Esta función estará disponible en la próxima actualización."
+  "feature_soon" : "Esta función estará disponible en la próxima actualización.",
+  "internet_error_checking" : "Comprobando conexión a internet...",
+  "internet_error_data" : "Ha habido un error con la conexión a internet. Por favor, comprueba tu conexión y vuelve a intentarlo.",
+  "internet_error_try_again" : "Intentar de nuevo"
 }

@@ -44,4 +44,5 @@
   "internet_error_checking" : "Checking internet connection...",
   "internet_error_data" : "There has been an error trying to retrieve your session data. Please check your internet connection or try again later.",
   "internet_error_try_again" : "Try again"
+
 }
