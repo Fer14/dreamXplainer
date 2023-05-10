@@ -63,7 +63,7 @@ class AnswerProvider extends ChangeNotifier {
     'Sad': 'be very sad, negative, disheartened and disastrous story',
     'Serious':'be extremely rigurous, the sotry needs to be real, without crazy stuff',
     'Fantasy':'be very fantasy, introducing new fantasy characters',
-    'Tarantino':'be related with blood, many deaths and violence, as if it was a Tarantino movie',
+    'Tarantino':'be very dramatic, related with blood, deaths and violence, and lots of blood',
     'Action':'contain plenty of action, with many fights and explosions',
   };
 
