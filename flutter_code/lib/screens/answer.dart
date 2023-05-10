@@ -91,7 +91,7 @@ class _AnswerPageState extends State<AnswerPage>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset("assets/new.png", width: 200,),
-                    Text("Are you sure you want to go back? You will lose this dream's explanation and ending. Make sure you have copies and shared with your friends.",textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
+                    Text("Are you sure you want to go back? You will lose this dream's explanation and ending. Make sure you have copied and shared it with your friends.",textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
                   ],
                 ),
                 actions: <Widget>[
@@ -391,7 +391,7 @@ class _AnswerPageState extends State<AnswerPage>
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                 backgroundColor: Colors.white,
-                title: Text('COMMING SOON', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+                title: Text('COMING SOON', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

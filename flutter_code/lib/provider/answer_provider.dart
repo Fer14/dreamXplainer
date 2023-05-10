@@ -92,7 +92,7 @@ class AnswerProvider extends ChangeNotifier {
     _storyAnswer = null;
 
     String? tag = tagwords[string_tag];
-    String prompt1 = "You will be given a dream that I had last night and you have to come up with a story that fulfills the dream and an explanation. Your answer has to be 2 paragraphs long.\n In the first paragraph, you will answer why I dreamt of that thing, what does it signify and what should I expect next in my life according to this dream. You can make guesses and speculate about whatever you want. Try to $tag This paragraph will be 2 or 3 sentences long.\n In the second paragraph, you will complete what happened after the dream by creating a story. You have to be creative and the story has to $tag. Use the past tense. Avoid talking in first person. This paragraph will be 2 sentences long. \n The story in the dream I had last night was: ";
+    String prompt1 = "You will be given a dream that I had last night and you have to come up with a story that fulfills the dream and an explanation. Your answer has to be 2 paragraphs long.\n In the first paragraph, you will answer why I dreamt of that thing, what does it signify and what should I expect next in my life according to this dream. You can make guesses and speculate about whatever you want. Try to $tag. This paragraph will be 2 or 3 sentences long.\n In the second paragraph, you will complete what happened after the dream as if I had not woken up. You have to be creative and the story has to $tag. Use the past tense. Avoid talking in first person. This paragraph will be 2 sentences long. \n The story in the dream I had last night was: ";
     String prompt2 = "\n The interpretation you come up with is: \n ";
     String prompt = prompt1 + "\n $text" + prompt2;
 

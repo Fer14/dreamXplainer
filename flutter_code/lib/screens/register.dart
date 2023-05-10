@@ -240,11 +240,9 @@ Widget _userTextField(Size size) {
 
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
-            print('The password provided is too weak.');
             _showErroDialog('The password provided is too weak.', 'assets/pass.png');
           } else if (e.code == 'email-already-in-use') {
-            _showErroDialog('The account already exists for that email.', 'assets/user.png');
-            print('The account already exists for that email.');
+            _showErroDialog('An account already exists for that email.', 'assets/user.png');
           }
         } catch (e) {
           print(e);

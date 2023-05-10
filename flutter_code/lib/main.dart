@@ -3,6 +3,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat2.dart';
@@ -88,6 +89,15 @@ class MyApp extends StatelessWidget {
                 primaryColor: pale_colors.blue,
                 fontFamily: 'Nunito'
               ),
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+            supportedLocales: [
+              Locale('en'),
+              Locale('es')  //Spanish
+            ],
               home: AnimatedSplashScreen(
                   duration: 1500,
                   splash: Image.asset('assets/icon.png',),

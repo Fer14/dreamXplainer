@@ -1,28 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:hello_world/provider/answer_provider.dart';
 import 'package:hello_world/screens/chat2.dart';
-import 'package:hello_world/screens/register.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'dart:convert';
-import 'package:provider/provider.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:flutter/services.dart';
-import '../ads/ad_mob_service.dart';
-import '../utils/appbar.dart';
 import '../utils/global_vars.dart';
-import '../utils/policy_text.dart';
-import 'package:slide_to_confirm/slide_to_confirm.dart';
 
 import 'login.dart';
 
