@@ -24,6 +24,7 @@
   "error_points" : "You dont have any dream points left, you can get them by watching ads.",
   "caution" : "CAUTION!",
   "warning" : "WARNING!",
+  "error" : "ERROR!",
   "wait" : "WAIT!",
   "confirm_logout" : "Are you sure you want to logout?",
   "cancel" : "Cancel",
@@ -34,7 +35,7 @@
   "serious_tag" : "Serious",
   "sad_tag" : "Sad",
   "romantic_tag" : "Romantic",
-  "tarantino_tag" : "Happy",
+  "tarantino_tag" : "Tarantino",
   "fantasy_tag" : "Fantasy",
   "go_back_warning" : "Are you sure you want to go back? You will lose this dream's explanation and ending. Make sure you have copied and shared it with your friends.",
   "connection_error" : "There has been an error with the connection. Please try again in the following minutes...",
@@ -43,6 +44,7 @@
   "feature_soon" : "This feature will be available in the next update.",
   "internet_error_checking" : "Checking internet connection...",
   "internet_error_data" : "There has been an error trying to retrieve your session data. Please check your internet connection or try again later.",
-  "internet_error_try_again" : "Try again"
+  "internet_error_try_again" : "Try again",
+  "skip" : "Skip"
 
 }

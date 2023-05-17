@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../ads/ad_mob_service.dart';
+import '../services/app.localizations.dart';
 import '../utils/appbar.dart';
 import 'chat2.dart';
 
@@ -38,10 +39,17 @@ class _AnswerPageState extends State<AnswerPage>
   late TabController _tabController;
   int _selectedIndex = 0;
   final _selectedColor = pale_colors.blue;
-  final _tabs = const [
+
+  final _tabs_en = const [
     Tab(text: 'Explanation'),
     Tab(text: 'Dream ending'),
   ];
+
+  final _tabs_es = const [
+    Tab(text: 'Explicación'),
+    Tab(text: 'Final del sueño'),
+  ];
+
   final BannerAd mybanner = BannerAd(
       size: AdSize.fullBanner,
       adUnitId: AdMobService.bannerAdUnitId2!,
@@ -74,6 +82,7 @@ class _AnswerPageState extends State<AnswerPage>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final answerProvider = Provider.of<AnswerProvider>(context);
+    final appLocalization = AppLocalization.of(context);
 
 
 
@@ -86,12 +95,12 @@ class _AnswerPageState extends State<AnswerPage>
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                 backgroundColor: Colors.white,
-                title: Text('WAIT!', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+                title: Text(appLocalization!.getTranslatedValue('wait').toString(), style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset("assets/new.png", width: 200,),
-                    Text("Are you sure you want to go back? You will lose this dream's explanation and ending. Make sure you have copied and shared it with your friends.",textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
+                    Text(appLocalization!.getTranslatedValue('go_back_warning').toString(),textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
                   ],
                 ),
                 actions: <Widget>[
@@ -99,7 +108,7 @@ class _AnswerPageState extends State<AnswerPage>
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('Cancel', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: Text(appLocalization!.getTranslatedValue('cancel').toString(), style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
                   TextButton(
                     onPressed: () {
@@ -109,7 +118,7 @@ class _AnswerPageState extends State<AnswerPage>
 
                       );
                     },
-                    child: Text('Accept', style: TextStyle(color:colors.brown, fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: Text(appLocalization!.getTranslatedValue('accept').toString(), style: TextStyle(color:colors.brown, fontSize: 20, fontWeight: FontWeight.bold)),
                   )
                 ],
               );
@@ -122,7 +131,7 @@ class _AnswerPageState extends State<AnswerPage>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(icon: Icon(FontAwesomeIcons.cloud, color: Colors.white,), onPressed: () {
-                  showDreamDialog(answerProvider);
+                  showDreamDialog(answerProvider, appLocalization);
                 }
                   ,),
                 Padding(padding: EdgeInsets.only(bottom: 10),
@@ -165,7 +174,7 @@ class _AnswerPageState extends State<AnswerPage>
                     color: Colors.white),
                 labelColor: colors.brown,
                 unselectedLabelColor: Colors.white,
-                tabs: _tabs,
+                tabs: (Localizations.localeOf(context).toString() == "es") ? _tabs_es : _tabs_en,
               ),
             ),
             Container(
@@ -230,7 +239,7 @@ class _AnswerPageState extends State<AnswerPage>
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
                                       child: Text(
-                                        'There has been an error with the connection. Please try again in the following minutes...',
+                                        appLocalization!.getTranslatedValue('connection_error').toString(),
                                         style: TextStyle(
                                           color: colors.brown,
                                           fontSize: 20,
@@ -291,7 +300,7 @@ class _AnswerPageState extends State<AnswerPage>
                                         child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
                                       child: Text(
-                                        'There has been an error with the connection. Please try again in the following minutes...',
+                                        appLocalization!.getTranslatedValue('internet_error_data').toString(),
                                         style: TextStyle(
                                           color: colors.brown,
                                           fontSize: 20,
@@ -322,12 +331,12 @@ class _AnswerPageState extends State<AnswerPage>
                 children: [
                   (_selectedIndex == 0) ?
                   (answerProvider.explanationAnswer != null)
-                      ?   copyButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
+                      ?   copyButton( size,  answerProvider, answerProvider.explanationAnswer, ) : Container() :
                   (answerProvider.storyAnswer != null) ? copyButton( size,  answerProvider, answerProvider.storyAnswer) : Container() ,
                   (_selectedIndex == 0) ?
                   (answerProvider.explanationAnswer != null)
-                      ?   calendarButton( size,  answerProvider.explanationAnswer) : Container() :
-                  (answerProvider.storyAnswer != null) ? calendarButton( size,   answerProvider.storyAnswer) : Container() ,
+                      ?   calendarButton( size,  answerProvider.explanationAnswer, appLocalization) : Container() :
+                  (answerProvider.storyAnswer != null) ? calendarButton( size,   answerProvider.storyAnswer, appLocalization) : Container() ,
                   (_selectedIndex == 0) ?
                   (answerProvider.explanationAnswer != null)
                       ?   shareButton( size,  answerProvider, answerProvider.explanationAnswer) : Container() :
@@ -350,7 +359,7 @@ class _AnswerPageState extends State<AnswerPage>
     );
   }
 
-  void showDreamDialog(answerProvider){
+  void showDreamDialog(answerProvider,appLocalization){
     showDialog(
         context: context,
         builder: (context) {
@@ -358,7 +367,7 @@ class _AnswerPageState extends State<AnswerPage>
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('YOUR DREAM WAS:', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+            title: Text(appLocalization!.getTranslatedValue('re_read_dream').toString(), style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
             content: SingleChildScrollView(
               child: Text(answerProvider.dreamanswer,textAlign: TextAlign.justify,style: TextStyle(color: colors.brown, fontSize: 20)),
             ),
@@ -367,7 +376,7 @@ class _AnswerPageState extends State<AnswerPage>
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Accept', style: TextStyle(color:pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text(appLocalization!.getTranslatedValue('accept').toString(), style: TextStyle(color:pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
               )
             ],
           );
@@ -376,7 +385,7 @@ class _AnswerPageState extends State<AnswerPage>
 
 
 
-  Widget calendarButton(Size size, dream) {
+  Widget calendarButton(Size size, dream,appLocalization) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
           fixedSize:
@@ -391,12 +400,12 @@ class _AnswerPageState extends State<AnswerPage>
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                 backgroundColor: Colors.white,
-                title: Text('COMING SOON', style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
+                title: Text(appLocalization!.getTranslatedValue('coming_soon').toString(), style: TextStyle(color: colors.brown, fontWeight: FontWeight.bold, fontSize: 25)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset("assets/calendar_blue.png", width: 200,),
-                    Text('This feature will be available in the next update.',style: TextStyle(color: colors.brown, fontSize: 20)),
+                    Text(appLocalization!.getTranslatedValue('feature_soon').toString(),style: TextStyle(color: colors.brown, fontSize: 20)),
                   ],
                 ),
                 actions: <Widget>[
@@ -404,7 +413,7 @@ class _AnswerPageState extends State<AnswerPage>
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('Accept', style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: Text(appLocalization!.getTranslatedValue('accept').toString(), style: TextStyle(color: pale_colors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
                   )
                 ],
               );

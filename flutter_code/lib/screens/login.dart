@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import '../ads/ad_mob_service.dart';
+import '../services/app.localizations.dart';
 import '../utils/appbar.dart';
 import '../utils/global_vars.dart';
 import '../utils/policy_text.dart';
@@ -87,8 +88,11 @@ class _PolicyPageState extends State<PolicyPage> {
 
   @override
   Widget build(BuildContext context) {
+
     final size = MediaQuery.of(context).size;
     final answerProvider = Provider.of<AnswerProvider>(context);
+    final appLocalization = AppLocalization.of(context);
+
 
 
     return Scaffold(
@@ -124,8 +128,8 @@ class _PolicyPageState extends State<PolicyPage> {
                         Image.asset("assets/better_logo.png", width: size.width *0.7,),
                         userTextField(size),
                         passwordTextField(size),
-                        checkSession(size),
-                        register_link(size),
+                        checkSession(size, appLocalization),
+                        register_link(size, appLocalization),
                       ],
                     ),
                   ),
@@ -142,7 +146,7 @@ class _PolicyPageState extends State<PolicyPage> {
                   color: colors.brown,
                   fontSize: 20,
                 ),
-                text: !error ? "Slide to confirm" : "Data incorrect",
+                text: !error ? appLocalization!.getTranslatedValue('login_button').toString(): appLocalization!.getTranslatedValue('login_error_button').toString(),
                 onConfirmation: () => {
                   login(userController.text, passController.text, answerProvider)
                 },
@@ -156,7 +160,7 @@ class _PolicyPageState extends State<PolicyPage> {
         );
   }
 
-  Widget checkSession(Size size){
+  Widget checkSession(Size size, appLocalization){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.2, vertical: size.height * 0.01),
       color: Colors.white,
@@ -175,7 +179,7 @@ class _PolicyPageState extends State<PolicyPage> {
             },
           ),
           Text(
-            "Keep me logged in",
+            appLocalization!.getTranslatedValue('login_keep_logged_in').toString(),
             style: TextStyle(
               color: colors.brown,
             ),
@@ -185,7 +189,7 @@ class _PolicyPageState extends State<PolicyPage> {
     );
   }
 
-  Widget register_link(Size size) {
+  Widget register_link(Size size, appLocalization) {
     return StreamBuilder(
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Container(
@@ -199,14 +203,14 @@ class _PolicyPageState extends State<PolicyPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account?  ",
+                    appLocalization!.getTranslatedValue('login_register_button').toString(),
                     style: TextStyle(
                       color: colors.brown,
                     ),
                   ),
                   GestureDetector(
                     child: Text(
-                      "Register.",
+                      appLocalization!.getTranslatedValue('login_register_button_2').toString(),
                       style: TextStyle(
                         decoration: TextDecoration.underline,
                         color: pale_colors.blue,

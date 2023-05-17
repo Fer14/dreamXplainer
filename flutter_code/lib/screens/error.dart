@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
+import '../services/app.localizations.dart';
 import '../utils/global_vars.dart';
 
 import 'login.dart';
@@ -36,6 +37,8 @@ class _ErrorPageState extends State<ErrorPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final appLocalization = AppLocalization.of(context);
+
 
 
 
@@ -63,7 +66,7 @@ class _ErrorPageState extends State<ErrorPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          "Checking internet connection...",
+                          appLocalization!.getTranslatedValue('internet_error_checking').toString(),
                           style: TextStyle(
                             color: colors.brown,
                             fontSize: 20,
@@ -86,7 +89,7 @@ class _ErrorPageState extends State<ErrorPage> {
                       children: [
                         Image.asset("assets/signal.png", width: size.width *0.7,),
                         Text(
-                          "There has been an error trying to retrieve your session data. Please check your internet connection or try again later.",
+                          appLocalization!.getTranslatedValue('internet_error_data').toString(),
                           style: TextStyle(
                             color: colors.brown,
                             fontSize: 20,
@@ -145,7 +148,7 @@ class _ErrorPageState extends State<ErrorPage> {
                                   GlobalVars.session_error = true;
                                 }
                                 },
-                                child: Text("Try again", style: TextStyle(color: pale_colors.dark_pink, fontSize: 20, fontWeight: FontWeight.bold),)))
+                                child: Text(appLocalization!.getTranslatedValue('internet_error_try_again').toString(), style: TextStyle(color: pale_colors.dark_pink, fontSize: 20, fontWeight: FontWeight.bold),)))
                       ],
                     ),
                   ),

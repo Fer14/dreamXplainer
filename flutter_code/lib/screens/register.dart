@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import '../ads/ad_mob_service.dart';
+import '../services/app.localizations.dart';
 import '../utils/appbar.dart';
 import '../utils/policy_text.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
@@ -60,6 +61,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final answerProvider = Provider.of<AnswerProvider>(context);
+    final appLocalization = AppLocalization.of(context);
+
 
 
     return Scaffold(
@@ -103,9 +106,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             SizedBox(height: size.height * 0.05,),
                             //_nameTextField(size),
                             _userTextField(size),
-                            _passwordTextField(size),
-                            _confirmpasswordTextField(size),
-                            _botonRegister(size),
+                            _passwordTextField(size, appLocalization),
+                            _confirmpasswordTextField(size, appLocalization),
+                            _botonRegister(size, appLocalization),
                           ],
                         ),
                       ),
@@ -121,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
 
-  Widget _botonRegister(Size size) {
+  Widget _botonRegister(Size size, appLocalization) {
     return Container(
       margin: EdgeInsets.only(top: size.height * 0.05),
         child: ElevatedButton(
@@ -131,10 +134,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25)), // background
               ),
-              onPressed: () async {register(emailController.text, passController.text, confirmpassController.text);},
+              onPressed: () async {register(emailController.text, passController.text, confirmpassController.text,appLocalization );},
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15.0),
-                child: const Text("\t Register \t",
+                child: Text(appLocalization!.getTranslatedValue('register_button').toString(),
                     style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
               )),
         );
@@ -166,7 +169,7 @@ Widget _userTextField(Size size) {
       });
 }
 
-  Widget _passwordTextField(Size size) {
+  Widget _passwordTextField(Size size,appLocalization) {
     return StreamBuilder(
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Container(
@@ -177,11 +180,11 @@ Widget _userTextField(Size size) {
               style: const TextStyle(color: colors.brown),
               keyboardType: TextInputType.text,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 //prefix: Icon(Icons.lock),
                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: pale_colors.blue,width: 2.0)),
                 focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: pale_colors.blue,width: 2.0)),
-                labelText: "Password",
+                labelText: appLocalization!.getTranslatedValue('login_password').toString(),
                 //hintStyle: TextStyle(color: Colores.fondoClaro),
                 labelStyle: TextStyle(color: colors.brown),
                 // iconColor: Colors.red,
@@ -193,7 +196,7 @@ Widget _userTextField(Size size) {
         });
   }
 
-  Widget _confirmpasswordTextField(Size size) {
+  Widget _confirmpasswordTextField(Size size,appLocalization) {
     return StreamBuilder(
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Container(
@@ -204,11 +207,11 @@ Widget _userTextField(Size size) {
               style: const TextStyle(color: colors.brown),
               keyboardType: TextInputType.text,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 //prefix: Icon(Icons.lock),
                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: pale_colors.blue,width: 2.0)),
                 focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: pale_colors.blue,width: 2.0)),
-                labelText: "Confirm password",
+                labelText: appLocalization!.getTranslatedValue('register_confirm_password').toString(),
                 //hintStyle: TextStyle(color: Colores.fondoClaro),
                 labelStyle: TextStyle(color: colors.brown),
                 // iconColor: Colors.red,
@@ -221,11 +224,11 @@ Widget _userTextField(Size size) {
   }
 
 
-  Future<void> register(email, pass1, pass2 ) async {
+  Future<void> register(email, pass1, pass2,appLocalization ) async {
     if (email.isEmpty || pass1.isEmpty || pass2.isEmpty) {
     } else {
       if (pass1 != pass2) {
-        _showErroDialog('The passwords do not match', 'assets/difference.png');
+        _showErroDialog(appLocalization!.getTranslatedValue('register_password_error_match').toString(), 'assets/difference.png');
       } else {
         try {
           UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: pass1);
@@ -240,9 +243,9 @@ Widget _userTextField(Size size) {
 
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
-            _showErroDialog('The password provided is too weak.', 'assets/pass.png');
+            _showErroDialog(appLocalization!.getTranslatedValue('register_password_error_weak').toString(), 'assets/pass.png');
           } else if (e.code == 'email-already-in-use') {
-            _showErroDialog('An account already exists for that email.', 'assets/user.png');
+            _showErroDialog(appLocalization!.getTranslatedValue('register_account_exists').toString(), 'assets/user.png');
           }
         } catch (e) {
           print(e);

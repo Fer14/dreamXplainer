@@ -10,6 +10,7 @@ import 'package:hello_world/screens/chat2.dart';
 import 'package:hello_world/screens/error.dart';
 import 'package:hello_world/screens/login.dart';
 import 'package:flutter/services.dart';
+import 'package:hello_world/services/app.localizations.dart';
 import 'package:hello_world/utils/colors.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hello_world/utils/global_vars.dart';
@@ -25,8 +26,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
-
-
   bool result = await InternetConnectionChecker().hasConnection;
   if(result == true) {
     if (GetStorage().read('email') != null &&
@@ -93,13 +92,24 @@ class MyApp extends StatelessWidget {
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
+                AppLocalization.delegate,
               ],
+
             supportedLocales: [
               Locale('en'),
               Locale('es')  //Spanish
             ],
+              localeResolutionCallback: (deviceLocale, supportedLocales) {
+                for (var locale in supportedLocales) {
+                  if (locale.languageCode == deviceLocale!.languageCode &&
+                      locale.countryCode == deviceLocale.countryCode) {
+                    return deviceLocale;
+                  }
+                }
+                return supportedLocales.last;
+              },
               home: AnimatedSplashScreen(
-                  duration: 1500,
+                  duration: 500,
                   splash: Image.asset('assets/icon.png',),
                   splashIconSize: 224,
                   nextScreen: GlobalVars.session_error ? ErrorPage() : GlobalVars.session ? Chat2Page() : PolicyPage(),

@@ -15,6 +15,7 @@ import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../provider/answer_provider.dart';
+import '../services/app.localizations.dart';
 import '../utils/appbar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -39,17 +40,28 @@ class _Chat2PageState extends State<Chat2Page> {
   GlobalKey keyButton = GlobalKey();
   String tag_selected = "";
 
+  @override
   void initState() {
     mybanner.load();
-    _createRewardedAd();
-    createTutorial();
+    super.initState();
     if (!voiceHandler.isEnabled) {
       voiceHandler.initSpeech();
     }
-    super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    _createRewardedAd();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      createTutorial();
+    });
+
+
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   final BannerAd mybanner = BannerAd(
@@ -71,7 +83,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 })));
   }
 
-  void showRewardedAd() {
+  void showRewardedAd(appLocalization) {
     if (_rewardedAd != null) {
       _rewardedAd!.fullScreenContentCallback =
           FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
@@ -88,7 +100,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 answerProvider.addReward();
               }));
     } else {
-      showAddErrorDialog();
+      showAddErrorDialog(appLocalization);
     }
   }
 
@@ -101,6 +113,8 @@ class _Chat2PageState extends State<Chat2Page> {
     final size = MediaQuery.of(context).size;
     final bool showFab = MediaQuery.of(context).viewInsets.bottom == 0.0;
     final answerProvider = Provider.of<AnswerProvider>(context);
+    final appLocalization = AppLocalization.of(context);
+
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -115,7 +129,7 @@ class _Chat2PageState extends State<Chat2Page> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  _showLogoutDialod();
+                  _showLogoutDialod(appLocalization!);
                 },
               ),
               Image.asset(
@@ -172,7 +186,7 @@ class _Chat2PageState extends State<Chat2Page> {
                         width: size.width * 0.8,
                         child: Center(
                           child: Text(
-                            "Describe your most recent dream and choose the way in which you want it to be interpreted and finished:",
+                            appLocalization!.getTranslatedValue('main_instruction').toString(),
                             style: TextStyle(
                               color: colors.brown,
                               fontSize: 20,
@@ -182,7 +196,7 @@ class _Chat2PageState extends State<Chat2Page> {
                         ),
                       ),
                       Container(
-                        child: multiselection(size),
+                        child: multiselection(size,appLocalization),
                       ),
                       Container(
                           child: Stack(
@@ -202,7 +216,7 @@ class _Chat2PageState extends State<Chat2Page> {
                                   setState(() => dream = value),
                               cursorColor: pale_colors.blue,
                               decoration: InputDecoration(
-                                hintText: "Write your dream here...",
+                                hintText: appLocalization!.getTranslatedValue('hint_dream').toString(),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: pale_colors.blue, width: 2),
@@ -241,7 +255,7 @@ class _Chat2PageState extends State<Chat2Page> {
               child: Container(
                 height: size.height * 0.05,
                 color: pale_colors.blue,
-                  child:  bottomButtons(answerProvider)),
+                  child:  bottomButtons(answerProvider, appLocalization),),
             ) : Container(),
           ],
         ),
@@ -261,14 +275,14 @@ class _Chat2PageState extends State<Chat2Page> {
           shape: CircularNotchedRectangle(), //shape of notch
           notchMargin:
               5, //notche margin between floating button and bottom appbar
-          child: bottomButtons(answerProvider),
+          child: bottomButtons(answerProvider,appLocalization),
         ) : null,
         // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
 
-  Widget bottomButtons(answerProvider){
+  Widget bottomButtons(answerProvider, appLocalization){
     return Row(
       //children inside bottom appbar
       mainAxisSize: MainAxisSize.max,
@@ -281,7 +295,7 @@ class _Chat2PageState extends State<Chat2Page> {
             color: Colors.white,
           ),
           onPressed: () {
-            showRewardedAd();
+            showRewardedAd(appLocalization);
           },
         ),
         IconButton(
@@ -293,23 +307,24 @@ class _Chat2PageState extends State<Chat2Page> {
             if (answerProvider.rewardScore > 0) {
               if (textEditingController.text != "") {
                 if (tag_selected != "") {
+                  Locale myLocale = Localizations.localeOf(context);
                   answerProvider.callGPT(
-                      textEditingController.text, tag_selected!);
+                      textEditingController.text, tag_selected!, myLocale!);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => AnswerPage()),
                   );
                 } else {
                   _showMaterialDialog(
-                      "assets/tag2.png", "You must select a tag");
+                      "assets/tag2.png", appLocalization!.getTranslatedValue('error_tag').toString(), appLocalization);
                 }
               } else {
                 _showMaterialDialog("assets/empty.png",
-                    "Your dream is empty, please write something.");
+                    appLocalization!.getTranslatedValue('error_dream').toString(), appLocalization);
               }
             } else {
               _showMaterialDialog("assets/warning.png",
-                  'You dont have any dream points left, you can get them by watching ads.');
+                  appLocalization!.getTranslatedValue('error_points').toString(), appLocalization);
             }
           },
         ),
@@ -319,7 +334,7 @@ class _Chat2PageState extends State<Chat2Page> {
   }
 
 
-  void _showLogoutDialod() {
+  void _showLogoutDialod(appLocalization) {
     showDialog(
         context: context,
         builder: (context) {
@@ -327,7 +342,7 @@ class _Chat2PageState extends State<Chat2Page> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('CAUTION!',
+            title: Text(appLocalization!.getTranslatedValue('caution').toString(),
                 style: TextStyle(
                     color: colors.brown,
                     fontWeight: FontWeight.bold,
@@ -339,7 +354,7 @@ class _Chat2PageState extends State<Chat2Page> {
                   "assets/logout.png",
                   width: 200,
                 ),
-                Text('Are you sure you want to log out?',
+                Text(appLocalization!.getTranslatedValue('confirm_logout').toString(),
                     style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
@@ -348,7 +363,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel',
+                child: Text(appLocalization!.getTranslatedValue('cancel').toString(),
                     style: TextStyle(
                         color: pale_colors.blue,
                         fontSize: 20,
@@ -363,7 +378,7 @@ class _Chat2PageState extends State<Chat2Page> {
                     MaterialPageRoute(builder: (context) => PolicyPage()),
                   );
                 },
-                child: Text('Accept',
+                child: Text(appLocalization!.getTranslatedValue('accept').toString(),
                     style: TextStyle(
                         color: colors.brown,
                         fontSize: 20,
@@ -374,7 +389,7 @@ class _Chat2PageState extends State<Chat2Page> {
         });
   }
 
-  void _showMaterialDialog(image, text) {
+  void _showMaterialDialog(image, text, appLocalization) {
     showDialog(
         context: context,
         builder: (context) {
@@ -382,7 +397,7 @@ class _Chat2PageState extends State<Chat2Page> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('WARNING',
+            title: Text(appLocalization!.getTranslatedValue('warning').toString(),
                 style: TextStyle(
                     color: colors.brown,
                     fontWeight: FontWeight.bold,
@@ -402,7 +417,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Accept',
+                child: Text(appLocalization!.getTranslatedValue('accept').toString(),
                     style: TextStyle(
                         color: pale_colors.blue,
                         fontSize: 20,
@@ -434,7 +449,7 @@ class _Chat2PageState extends State<Chat2Page> {
     }
   }
 
-  Widget multiselection(Size size) {
+  Widget multiselection(Size size, appLocalization) {
     return Container(
       width: size.width * 0.9,
       child: Center(
@@ -463,8 +478,8 @@ class _Chat2PageState extends State<Chat2Page> {
           ),
           items: [
             MultiSelectCard(
-              value: 'Funny',
-              label: 'Funny',
+              value: appLocalization!.getTranslatedValue('funny_tag').toString(),
+              label: appLocalization!.getTranslatedValue('funny_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.violet.withOpacity(0.8),
@@ -475,8 +490,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Horror',
-              label: 'Horror',
+              value: appLocalization!.getTranslatedValue('horror_tag').toString(),
+              label: appLocalization!.getTranslatedValue('horror_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.pink.withOpacity(0.8),
@@ -487,8 +502,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Action',
-              label: 'Action',
+              value: appLocalization!.getTranslatedValue('action_tag').toString(),
+              label: appLocalization!.getTranslatedValue('action_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.blue.withOpacity(0.8),
@@ -499,8 +514,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Serious',
-              label: 'Serious',
+              value: appLocalization!.getTranslatedValue('serious_tag').toString(),
+              label: appLocalization!.getTranslatedValue('serious_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.green.withOpacity(0.8),
@@ -511,8 +526,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Romantic',
-              label: 'Romantic',
+              value: appLocalization!.getTranslatedValue('romantic_tag').toString(),
+              label: appLocalization!.getTranslatedValue('romantic_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.dark_pink.withOpacity(0.8),
@@ -523,8 +538,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Tarantino',
-              label: 'Tarantino',
+              value: appLocalization!.getTranslatedValue('tarantino_tag').toString(),
+              label: appLocalization!.getTranslatedValue('tarantino_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.red.withOpacity(0.8),
@@ -535,8 +550,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Sad',
-              label: 'Sad',
+              value: appLocalization!.getTranslatedValue('sad_tag').toString(),
+              label: appLocalization!.getTranslatedValue('sad_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.orange.withOpacity(0.8),
@@ -547,8 +562,8 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: 'Fantasy',
-              label: 'Fantasy',
+              value: appLocalization!.getTranslatedValue('fantasy_tag').toString(),
+              label: appLocalization!.getTranslatedValue('fantasy_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.light_blue.withOpacity(0.8),
@@ -562,7 +577,7 @@ class _Chat2PageState extends State<Chat2Page> {
           onMaximumSelected: (allSelectedItems, selectedItem) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: magic_colors.dark_pink,
-                content: Text('You can only select 1 options at a time')));
+                content: Text(appLocalization!.getTranslatedValue('error_multiple_tags').toString())));
           },
         ),
       ),
@@ -574,7 +589,7 @@ class _Chat2PageState extends State<Chat2Page> {
       pulseEnable: false,
       targets: _createTargets(),
       colorShadow: pale_colors.blue,
-      textSkip: "SKIP",
+      textSkip: AppLocalization.of(context).getTranslatedValue('skip').toString(),
       textStyleSkip:
           TextStyle(color: colors.brown, fontWeight: FontWeight.bold),
       paddingFocus: 0,
@@ -622,7 +637,7 @@ class _Chat2PageState extends State<Chat2Page> {
                   children: [
                     Center(
                         child: Text(
-                      "Watch ADs to get rewards that can be used for more dreams.",
+                          AppLocalization.of(context).getTranslatedValue('main_instruction').toString(),
                       style: TextStyle(
                         color: colors.brown,
                         fontSize: 25,
@@ -641,7 +656,7 @@ class _Chat2PageState extends State<Chat2Page> {
                     ),
                     Center(
                         child: Text(
-                      "Each time you watch an AD, you will get 1 dream.",
+                          AppLocalization.of(context).getTranslatedValue('ad_instruction_2').toString(),
                       style: TextStyle(
                         color: colors.brown,
                         fontSize: 25,
@@ -666,7 +681,7 @@ class _Chat2PageState extends State<Chat2Page> {
     return targets;
   }
 
-  void showAddErrorDialog() {
+  void showAddErrorDialog(appLocalization) {
     showDialog(
         context: context,
         builder: (context) {
@@ -674,7 +689,7 @@ class _Chat2PageState extends State<Chat2Page> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.white,
-            title: Text('ERROR',
+            title: Text(appLocalization!.getTranslatedValue('error').toString(),
                 style: TextStyle(
                     color: colors.brown,
                     fontWeight: FontWeight.bold,
@@ -687,7 +702,7 @@ class _Chat2PageState extends State<Chat2Page> {
                   width: 200,
                 ),
                 Text(
-                    'Ad could not load, please try again in the following minutes.',
+                    appLocalization!.getTranslatedValue('ad_error').toString(),
                     style: TextStyle(color: colors.brown, fontSize: 20)),
               ],
             ),
@@ -696,7 +711,7 @@ class _Chat2PageState extends State<Chat2Page> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Accept',
+                child: Text(appLocalization!.getTranslatedValue('accept').toString(),
                     style: TextStyle(
                         color: pale_colors.blue,
                         fontSize: 20,

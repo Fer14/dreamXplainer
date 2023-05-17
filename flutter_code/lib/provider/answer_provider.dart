@@ -56,7 +56,7 @@ class AnswerProvider extends ChangeNotifier {
   }
 
 
-  Map<String, String> tagwords = {
+  Map<String, String> tagwords_en = {
     'Funny':'be very funny, introducing new crazy characters',
     'Romantic': 'be very romantic, introducing love and relationships in your story',
     'Horror': 'be very scary, introducing scary characters and jumpscares',
@@ -67,11 +67,21 @@ class AnswerProvider extends ChangeNotifier {
     'Action':'contain plenty of action, with many fights and explosions',
   };
 
+  Map<String, String> tagwords_es = {
+    'Divertido': 'ser muy divertido, introducir nuevos personajes locos',
+    'Romántico': 'ser muy romántico, introducir el amor y las relaciones amorosas en tu historia',
+    'Horror': 'ser muy aterrador, introducir personajes aterradores y sustos',
+    'Triste': 'ser muy triste, negativo, descorazonador y desastroso',
+    'Serio': 'ser extremadamente riguroso, la historia debe ser real, sin cosas locas',
+    'Fantasía': 'ser muy fantasioso, introduciendo nuevos personajes de fantasía',
+    'Tarantino': 'ser muy dramático, relacionado con sangre, muertes y violencia, y mucha sangre',
+    'Acción': 'contener mucha acción, con muchas peleas y explosiones'};
 
-  Future<void> callGPT(String text, String tag) async {
+
+  Future<void> callGPT(String text, String tag, locale) async {
     _dreamanswer = text;
     subReward();
-    GPT(text, tag);
+    GPT(text, tag, locale);
 
     if (_explanationError || _storyError) {
       // add reward
@@ -83,7 +93,8 @@ class AnswerProvider extends ChangeNotifier {
 
   String API_KEY = "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";
 
-  Future<void> GPT(String text, string_tag) async {
+  Future<void> GPT(String text, string_tag, locale) async {
+
 
     _explanationError = false;
     _explanationAnswer = null;
@@ -91,13 +102,26 @@ class AnswerProvider extends ChangeNotifier {
     _storyError = false;
     _storyAnswer = null;
 
-    String? tag = tagwords[string_tag];
-    String prompt1 = "You will be given a dream that I had last night and you have to come up with a story that fulfills the dream and an explanation. Your answer has to be 2 paragraphs long.\n In the first paragraph, you will answer why I dreamt of that thing, what does it signify and what should I expect next in my life according to this dream. You can make guesses and speculate about whatever you want. Try to $tag. This paragraph will be 2 or 3 sentences long.\n In the second paragraph, you will complete what happened after the dream as if I had not woken up. You have to be creative and the story has to $tag. Use the past tense. Avoid talking in first person. This paragraph will be 2 sentences long. \n The story in the dream I had last night was: ";
-    String prompt2 = "\n The interpretation you come up with is: \n ";
-    String prompt = prompt1 + "\n $text" + prompt2;
+    String prompt = "";
 
+    if(locale.toString() == "es"){
+      print("español");
+      String? tag = tagwords_es[string_tag];
 
-    print("prompt: $prompt");
+      String prompt1_es = "Te voy a escribir un sueño que yo tuve anoche y tienes que inventarte una historia que continúe con el sueño y una explicación del sueño. Tu respuesta debe tener 2 párrafos.\n En el primer párrafo, explica por qué soñé con esa cosa, qué significa y qué debo esperar en mi vida según este sueño. Puedes hacer conjeturas y especular sobre lo que quieras. Intenta  $tag. El párrafo tiene que ser corto.\n En el segundo párrafo, crea una historia sobre cómo hubiera acabado el sueño. Tienes que ser creativo y la historia tiene que $tag. El párrafo tiene que ser corto. Utiliza el tiempo pasado. Evita hablar en primera persona. Empieza con 'El sueño continua..'. \n El sueño que tuve anoche fue: ";
+      String prompt2_es = "\n La interpretación que se te ocurre es: \n ";
+      prompt = prompt1_es + "\n $text" + prompt2_es;
+    }
+    else{
+      print("ingles");
+
+      String? tag = tagwords_en[string_tag];
+
+      String prompt1_es = "You will be given a dream that I had last night and you have to come up with a story that fulfills the dream and an explanation. Your answer has to be 2 paragraphs long.\n In the first paragraph, you will answer why I dreamt of that thing, what does it signify and what should I expect next in my life according to this dream. You can make guesses and speculate about whatever you want. Try to $tag. This paragraph will be 2 or 3 sentences long.\n In the second paragraph, you will complete what happened after the dream as if I had not woken up. You have to be creative and the story has to $tag. Use the past tense. Avoid talking in first person. This paragraph will be 2 sentences long. \n The story in the dream I had last night was: ";
+      String prompt2_es = "\n The interpretation you come up with is: \n ";
+      prompt = prompt1_es + "\n $text" + prompt2_es;
+    }
+
 
     //await Future.delayed(Duration(seconds: 1));
 /*    _explanationAnswer =
@@ -124,21 +148,36 @@ class AnswerProvider extends ChangeNotifier {
        Map map = json.decode(response.body);
        String answer = map["choices"][0]['message']['content'];
        // split answer into 2 parts
-       print(answer);
        List<String> lines = answer.split('\n');
-       _explanationAnswer= lines[0];
-       _storyAnswer= lines[2];
-        print(lines);
-        print("explanation: $_explanationAnswer");
-        print("story: $_storyAnswer");
+       if(locale.toString() == "es"){
+
+         _explanationAnswer = codeSpanish(lines[0]);
+         _storyAnswer=  codeSpanish(lines[2]);
+       }
+       else {
+         _explanationAnswer= lines[0];
+         _storyAnswer= lines[2];
+       }
+
      }catch(e){
-       print(e);
        _explanationError = true;
        _storyError = true;
      }
 
 
     notifyListeners();
+  }
+
+  String codeSpanish(String input) {
+    String latinString = input.replaceAll("Ã¡", "á")
+        .replaceAll("Ã©", "é")
+        .replaceAll("Ã­", "í")
+        .replaceAll("Ã³", "ó")
+        .replaceAll("Ãº", "ú")
+        .replaceAll("Ã±", "ñ")
+        .replaceAll("Ã¼", "ü");
+
+    return latinString;
   }
 
 
