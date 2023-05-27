@@ -7,6 +7,8 @@ name = "pypi"
 openai = "*"
 pandas = "*"
 numpy = "*"
+ipywidgets = "*"
+flutter = "*"
 
 [dev-packages]
 
