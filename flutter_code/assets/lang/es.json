@@ -1,5 +1,5 @@
 {
-  "login_button" :  "Desliza para confirmar",
+  "login_button" :  "Confirmar",
   "login_error_button" : "Datos incorrectos",
   "login_keep_logged_in": "Mantener sesión",
   "login_register_button" : "No tienes cuenta?  ",
@@ -37,6 +37,7 @@
   "romantic_tag" : "Romántico",
   "tarantino_tag" : "Tarantino",
   "fantasy_tag" : "Fantasía",
+  "erotic_tag" : "Erótico",
   "go_back_warning" : "¿Seguro que quieres volver? Perderás la explicación de este sueño. Asegúrate de haberla compartido con tus amigos.",
   "connection_error" : "Ha habido un error con la conexión. Por favor, inténtalo de nuevo en unos minutos.",
   "re_read_dream": "TU SUEÑO FUE:",
@@ -45,5 +46,7 @@
   "internet_error_checking" : "Comprobando conexión a internet...",
   "internet_error_data" : "Ha habido un error con la conexión a internet. Por favor, comprueba tu conexión y vuelve a intentarlo.",
   "internet_error_try_again" : "Intentar de nuevo",
-  "skip" : "Saltar"
+  "skip" : "Saltar",
+  "update" : "Actualizar",
+  "update_message" : "Hay una nueva versión disponible. Por favor, actualiza la aplicación para continuar."
 }

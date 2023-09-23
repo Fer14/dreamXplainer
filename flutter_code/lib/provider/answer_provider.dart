@@ -65,6 +65,7 @@ class AnswerProvider extends ChangeNotifier {
     'Fantasy':'be very fantasy, introducing new fantasy characters',
     'Tarantino':'be very dramatic, related with blood, deaths and violence, and lots of blood',
     'Action':'contain plenty of action, with many fights and explosions',
+    'Erotic':'be extremely sexual and filthy, containing porn scenes and hot sentences',
   };
 
   Map<String, String> tagwords_es = {
@@ -75,7 +76,9 @@ class AnswerProvider extends ChangeNotifier {
     'Serio': 'ser extremadamente riguroso, la historia debe ser real, sin cosas locas',
     'Fantasía': 'ser muy fantasioso, introduciendo nuevos personajes de fantasía',
     'Tarantino': 'ser muy dramático, relacionado con sangre, muertes y violencia, y mucha sangre',
-    'Acción': 'contener mucha acción, con muchas peleas y explosiones'};
+    'Acción': 'contener mucha acción, con muchas peleas y explosiones',
+    'Erótico': 'ser extremadamente sexual y sucio, contener escenas pornográficas y frases picantes',
+  };
 
 
   Future<void> callGPT(String text, String tag, locale) async {
@@ -105,15 +108,13 @@ class AnswerProvider extends ChangeNotifier {
     String prompt = "";
 
     if(locale.toString() == "es"){
-      print("español");
       String? tag = tagwords_es[string_tag];
 
-      String prompt1_es = "Te voy a escribir un sueño que yo tuve anoche y tienes que inventarte una historia que continúe con el sueño y una explicación del sueño. Tu respuesta debe tener 2 párrafos.\n En el primer párrafo, explica por qué soñé con esa cosa, qué significa y qué debo esperar en mi vida según este sueño. Puedes hacer conjeturas y especular sobre lo que quieras. Intenta  $tag. El párrafo tiene que ser corto.\n En el segundo párrafo, crea una historia sobre cómo hubiera acabado el sueño. Tienes que ser creativo y la historia tiene que $tag. El párrafo tiene que ser corto. Utiliza el tiempo pasado. Evita hablar en primera persona. Empieza con 'El sueño continua..'. \n El sueño que tuve anoche fue: ";
+      String prompt1_es = "Te voy a escribir un sueño que yo tuve anoche y tienes que inventarte una historia que continúe con el sueño y una explicación del sueño. Tu respuesta debe tener 2 párrafos. \n En el primer párrafo, explica por qué soñé con esa cosa, qué significa y qué debo esperar en mi vida según este sueño. Puedes hacer conjeturas y especular sobre lo que quieras. Intenta  $tag. El párrafo tiene que ser corto. Evita hablar en primera persona. \n En el segundo párrafo, continua el sueño de forma natural, utilizando la segunda persona. Tienes que ser creativo y la historia tiene que $tag. El párrafo tiene que ser corto. No introduzcas el párrafo con frases como: 'Continuando el sueño...', ni 'Te despiertas en...'.  \n El sueño que tuve anoche fue: ";
       String prompt2_es = "\n La interpretación que se te ocurre es: \n ";
       prompt = prompt1_es + "\n $text" + prompt2_es;
     }
     else{
-      print("ingles");
 
       String? tag = tagwords_en[string_tag];
 
@@ -151,8 +152,15 @@ class AnswerProvider extends ChangeNotifier {
        List<String> lines = answer.split('\n');
        if(locale.toString() == "es"){
 
-         _explanationAnswer = codeSpanish(lines[0]);
-         _storyAnswer=  codeSpanish(lines[2]);
+         final bytes = lines[0].codeUnits;
+         _explanationAnswer = Utf8Decoder().convert(bytes);
+
+         final bytes2 = lines[2].codeUnits;
+         _storyAnswer = Utf8Decoder().convert(bytes2);
+
+         print("decoded:");
+         print(_explanationAnswer);
+
        }
        else {
          _explanationAnswer= lines[0];
@@ -168,17 +176,6 @@ class AnswerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String codeSpanish(String input) {
-    String latinString = input.replaceAll("Ã¡", "á")
-        .replaceAll("Ã©", "é")
-        .replaceAll("Ã­", "í")
-        .replaceAll("Ã³", "ó")
-        .replaceAll("Ãº", "ú")
-        .replaceAll("Ã±", "ñ")
-        .replaceAll("Ã¼", "ü");
-
-    return latinString;
-  }
 
 
 }

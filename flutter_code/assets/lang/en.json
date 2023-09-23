@@ -37,6 +37,7 @@
   "romantic_tag" : "Romantic",
   "tarantino_tag" : "Tarantino",
   "fantasy_tag" : "Fantasy",
+  "erotic_tag" : "Erotic",
   "go_back_warning" : "Are you sure you want to go back? You will lose this dream's explanation and ending. Make sure you have copied and shared it with your friends.",
   "connection_error" : "There has been an error with the connection. Please try again in the following minutes...",
   "re_read_dream": "YOUR DREAM WAS:",
@@ -45,6 +46,7 @@
   "internet_error_checking" : "Checking internet connection...",
   "internet_error_data" : "There has been an error trying to retrieve your session data. Please check your internet connection or try again later.",
   "internet_error_try_again" : "Try again",
-  "skip" : "Skip"
-
+  "skip" : "Skip",
+  "update" : "update",
+  "update_message" : "There is a new version of the app available. Please update it to continue using it."
 }

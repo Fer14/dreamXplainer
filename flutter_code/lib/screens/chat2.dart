@@ -14,11 +14,12 @@ import 'dart:convert';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../provider/answer_provider.dart';
 import '../services/app.localizations.dart';
 import '../utils/appbar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
+import 'package:new_version_plus/new_version_plus.dart';
 import '../utils/global_vars.dart';
 import 'login.dart';
 
@@ -50,13 +51,25 @@ class _Chat2PageState extends State<Chat2Page> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    final newVersion = NewVersionPlus(
+      androidId: "com.dreamxplainer",
+    );
     _createRewardedAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       createTutorial();
+      checkNewVersion(newVersion);
     });
 
+  }
 
-
+  void checkNewVersion(NewVersionPlus newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    print(status);
+    if(status != null) {
+      if(status.canUpdate) {
+        _showUpdateDialod();
+      }
+    }
   }
 
   @override
@@ -334,6 +347,58 @@ class _Chat2PageState extends State<Chat2Page> {
   }
 
 
+  void _showUpdateDialod() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Colors.white,
+            title: Text(AppLocalization.of(context)!.getTranslatedValue('wait').toString(),
+                style: TextStyle(
+                    color: colors.brown,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/update.png",
+                  width: 200,
+                ),
+                Text(AppLocalization.of(context)!.getTranslatedValue('update_message').toString(),
+                    style: TextStyle(color: colors.brown, fontSize: 20)),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  //pop
+                  Navigator.of(context).pop();
+                },
+                child: Text(AppLocalization.of(context)!.getTranslatedValue('cancel').toString(),
+                    style: TextStyle(
+                        color: pale_colors.blue,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.dreamxplainer"));
+                },
+                child: Text(AppLocalization.of(context)!.getTranslatedValue('update').toString(),
+                    style: TextStyle(
+                        color: colors.brown,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
+              )
+            ],
+          );
+        });
+  }
+
+
   void _showLogoutDialod(appLocalization) {
     showDialog(
         context: context,
@@ -471,15 +536,35 @@ class _Chat2PageState extends State<Chat2Page> {
               padding: EdgeInsets.only(right: 5),
               child: Icon(
                 Icons.check,
-                color: Colors.white,
+                color: colors.brown,
                 size: 14,
               ),
             ),
           ),
           items: [
             MultiSelectCard(
+              textStyles: MultiSelectItemTextStyles(
+                  selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
+              ),
               value: appLocalization!.getTranslatedValue('funny_tag').toString(),
               label: appLocalization!.getTranslatedValue('funny_tag').toString(),
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.green.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.green,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            MultiSelectCard(
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
+              ),
+              value: appLocalization!.getTranslatedValue('horror_tag').toString(),
+              label: appLocalization!.getTranslatedValue('horror_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
                     color: pale_colors.violet.withOpacity(0.8),
@@ -490,18 +575,10 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: appLocalization!.getTranslatedValue('horror_tag').toString(),
-              label: appLocalization!.getTranslatedValue('horror_tag').toString(),
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.pink.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.pink,
-                    borderRadius: BorderRadius.circular(20)),
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
               ),
-            ),
-            MultiSelectCard(
               value: appLocalization!.getTranslatedValue('action_tag').toString(),
               label: appLocalization!.getTranslatedValue('action_tag').toString(),
               decorations: MultiSelectItemDecorations(
@@ -514,42 +591,42 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: appLocalization!.getTranslatedValue('serious_tag').toString(),
-              label: appLocalization!.getTranslatedValue('serious_tag').toString(),
-              decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                    color: pale_colors.green.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20)),
-                selectedDecoration: BoxDecoration(
-                    color: pale_colors.green,
-                    borderRadius: BorderRadius.circular(20)),
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
               ),
-            ),
-            MultiSelectCard(
               value: appLocalization!.getTranslatedValue('romantic_tag').toString(),
               label: appLocalization!.getTranslatedValue('romantic_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
-                    color: pale_colors.dark_pink.withOpacity(0.8),
+                    color: pale_colors.pink.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(20)),
                 selectedDecoration: BoxDecoration(
-                    color: pale_colors.dark_pink,
+                    color: pale_colors.pink,
                     borderRadius: BorderRadius.circular(20)),
               ),
             ),
             MultiSelectCard(
-              value: appLocalization!.getTranslatedValue('tarantino_tag').toString(),
-              label: appLocalization!.getTranslatedValue('tarantino_tag').toString(),
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
+              ),
+              value: appLocalization!.getTranslatedValue('fantasy_tag').toString(),
+              label: appLocalization!.getTranslatedValue('fantasy_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
-                    color: pale_colors.red.withOpacity(0.8),
+                    color: pale_colors.light_blue.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(20)),
                 selectedDecoration: BoxDecoration(
-                    color: pale_colors.red,
+                    color: pale_colors.light_blue,
                     borderRadius: BorderRadius.circular(20)),
               ),
             ),
             MultiSelectCard(
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
+              ),
               value: appLocalization!.getTranslatedValue('sad_tag').toString(),
               label: appLocalization!.getTranslatedValue('sad_tag').toString(),
               decorations: MultiSelectItemDecorations(
@@ -562,17 +639,38 @@ class _Chat2PageState extends State<Chat2Page> {
               ),
             ),
             MultiSelectCard(
-              value: appLocalization!.getTranslatedValue('fantasy_tag').toString(),
-              label: appLocalization!.getTranslatedValue('fantasy_tag').toString(),
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
+              ),
+              value: appLocalization!.getTranslatedValue('erotic_tag').toString(),
+              label: appLocalization!.getTranslatedValue('erotic_tag').toString(),
               decorations: MultiSelectItemDecorations(
                 decoration: BoxDecoration(
-                    color: pale_colors.light_blue.withOpacity(0.8),
+                    color: pale_colors.dark_red.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(20)),
                 selectedDecoration: BoxDecoration(
-                    color: pale_colors.light_blue,
+                    color: pale_colors.dark_red,
                     borderRadius: BorderRadius.circular(20)),
               ),
             ),
+            MultiSelectCard(
+              textStyles: MultiSelectItemTextStyles(
+                selectedTextStyle: TextStyle(color: colors.brown),
+                disabledTextStyle: TextStyle(color: colors.brown),
+              ),
+              value: appLocalization!.getTranslatedValue('tarantino_tag').toString(),
+              label: appLocalization!.getTranslatedValue('tarantino_tag').toString(),
+              decorations: MultiSelectItemDecorations(
+                decoration: BoxDecoration(
+                    color: pale_colors.yellow.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20)),
+                selectedDecoration: BoxDecoration(
+                    color: pale_colors.yellow,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+
           ],
           onMaximumSelected: (allSelectedItems, selectedItem) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

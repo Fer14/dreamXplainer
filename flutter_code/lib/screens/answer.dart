@@ -36,6 +36,8 @@ class AnswerPage extends StatefulWidget {
 
 class _AnswerPageState extends State<AnswerPage>
     with SingleTickerProviderStateMixin {
+
+  InterstitialAd? _interstitialAd;
   late TabController _tabController;
   int _selectedIndex = 0;
   final _selectedColor = pale_colors.blue;
@@ -58,8 +60,8 @@ class _AnswerPageState extends State<AnswerPage>
 
   @override
   void initState() {
-
     mybanner.load();
+    _createInterstitialAd();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
@@ -70,6 +72,31 @@ class _AnswerPageState extends State<AnswerPage>
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+  }
+
+  void _createInterstitialAd(){
+    InterstitialAd.load(
+        adUnitId : AdMobService.interstitialAdUnitId!,
+        request : const AdRequest(),
+        adLoadCallback : InterstitialAdLoadCallback(onAdLoaded: (ad)=> _interstitialAd = ad , onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null)
+    );
+  }
+
+  void showInsterstitialAd(){
+    if (_interstitialAd != null){
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            ad.dispose();
+            _createInterstitialAd();
+          },
+          onAdFailedToShowFullScreenContent: (ad,error){
+            ad.dispose();
+            _createInterstitialAd();
+          }
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    }
   }
 
   @override
@@ -112,6 +139,7 @@ class _AnswerPageState extends State<AnswerPage>
                   ),
                   TextButton(
                     onPressed: () {
+                      showInsterstitialAd();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Chat2Page()),
