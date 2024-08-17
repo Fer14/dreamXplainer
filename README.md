@@ -22,3 +22,13 @@ This the open source code for the dreamXplainer Android App, previously on Play 
 
 We decided to open source the project since we were not going to continue it. We deleted all api keys and tokens but you can put yours and it should work.
 
+## Instalation
+
+
+```bash
+git clone <repo> 
+flutter create .
+flutter build apk
+``````
+
+eXplain the uneXplainable. 
