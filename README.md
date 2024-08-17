@@ -16,7 +16,7 @@
 
 ## Android App
 
-This the open source code for the dreamXplainer Android App, previously on Play Store. Written in Flutter and using the openai api. Also integrates with adsense ads engine.
+This the open source code for the dreamXplainer Android App, previously on Play Store. Written in Flutter and using the openai api. Also integrates with adsense ads engine. It uses Firebase to handle users login and sign ins.
 
 <p float="center">
   <img src="./screenshots/1.png" width="200" />
@@ -27,7 +27,7 @@ This the open source code for the dreamXplainer Android App, previously on Play 
 
 ## Open source
 
-We decided to open source the project since we were not going to continue it. We deleted all api keys and tokens but you can put yours and it should work.
+We decided to open source the project since we were not going to continue it. We deleted all api keys and tokens but you can put yours and it should work. 
 
 ## Instalation
 
