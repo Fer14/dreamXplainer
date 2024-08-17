@@ -1,6 +1,13 @@
 # dreamXplainer 🐑☁️
 
-![Logo](./logo.png)
+<p float="center"  style="text-align: center;">
+  <img src="./logo.png" width="150" />
+</p>
+
+<p float="center"  style="text-align: center;">
+  eXplain the uneXplainable. 
+</p>
+
 
 ## What is dreamXplainer?
 
@@ -12,10 +19,10 @@
 This the open source code for the dreamXplainer Android App, previously on Play Store. Written in Flutter and using the openai api. Also integrates with adsense ads engine.
 
 <p float="center">
-  <img src="./screenshots/1.png" width="150" />
-  <img src="./screenshots/2.png" width="150" /> 
-  <img src="./screenshots/3.png" width="150" />
-  <img src="./screenshots/4.png" width="150" />
+  <img src="./screenshots/1.png" width="200" />
+  <img src="./screenshots/2.png" width="200" /> 
+  <img src="./screenshots/3.png" width="200" />
+  <img src="./screenshots/4.png" width="200" />
 </p>
 
 ## Open source
@@ -31,4 +38,3 @@ flutter create .
 flutter build apk
 ``````
 
-eXplain the uneXplainable. 
