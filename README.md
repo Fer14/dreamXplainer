@@ -1,10 +1,10 @@
 # dreamXplainer 🐑☁️
 
-<p float="center"  style="text-align: center;">
+<p align="center">
   <img src="./logo.png" width="150" />
 </p>
 
-<p float="center"  style="text-align: center;">
+<p align="center">
   eXplain the uneXplainable. 
 </p>
 
